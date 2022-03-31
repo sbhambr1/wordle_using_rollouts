@@ -1,7 +1,13 @@
-from manim_imports_ext import *
+# from manim_imports_ext import *
 from tqdm import tqdm as ProgressDisplay
 from scipy.stats import entropy
-
+import numpy as np
+import os
+import math
+import json
+import random
+import logging as log
+from manimlib import *
 
 MISS = np.uint8(0)
 MISPLACED = np.uint8(1)
