@@ -63,16 +63,16 @@ def get_frequency_based_priors(n_common=3000, width_under_sigmoid=10):
 
     Sort the words by frequency, then apply a sigmoid along it.
     """
-    freq_map = get_word_frequencies()
-    words = np.array(list(freq_map.keys()))
-    freqs = np.array([freq_map[w] for w in words])
-    arg_sort = freqs.argsort()
-    sorted_words = words[arg_sort]
+    freq_map = get_word_frequencies() # {word: freq}
+    words = np.array(list(freq_map.keys())) # [word]
+    freqs = np.array([freq_map[w] for w in words]) # [freq]
+    arg_sort = freqs.argsort() 
+    sorted_words = words[arg_sort] 
 
     # We want to imagine taking this sorted list, and putting it on a number
     # line so that it's length is 10, situating it so that the n_common most common
     # words are positive, then applying a sigmoid
-    x_width = width_under_sigmoid
+    x_width = width_under_sigmoid 
     c = x_width * (-0.5 + n_common / len(words))
     xs = np.linspace(c - x_width / 2, c + x_width / 2, len(words))
     priors = dict()

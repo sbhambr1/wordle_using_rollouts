@@ -7,7 +7,7 @@ from tqdm import tqdm as ProgressDisplay
 
 # Functions to analyze second guesses
 
-def get_average_second_step_entropies(first_guesses, allowed_second_guesses, possible_words, priors):
+def get_average_second_step_entropies(first_guesses, allowed_second_guesses, possible_words, priors): # TODO: Make this work for multi-step lookahead
     result = []
     weights = get_weights(possible_words, priors)
     if weights.sum() == 0:

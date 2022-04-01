@@ -16,7 +16,7 @@ from tqdm import tqdm as ProgressDisplay
 
 # Run simulated wordle games
 
-def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words):
+def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words): # not being used right now, and is a utility function for additional analysis
     """
     Useful to prove what the minimum possible average score could be
     for a given initial guess
@@ -33,7 +33,7 @@ def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words):
     return p + (1 - p) * (1 + min_score)
 
 
-def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs):
+def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): # not being used right now, but seems like a utility function for additional analysis
     # Run find_best_two_step_entropy first
     file = os.path.join(mu.directories.get_directories()["data"], "wordle", "best_double_entropies.json")
     with open(file) as fp:
@@ -70,7 +70,7 @@ def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs):
     return result
 
 
-def find_best_two_step_entropy():
+def find_best_two_step_entropy(): # not being used right now, but seems like a utility function for additional analysis
     words = get_word_list()
     answers = get_word_list(short=True)
     priors = get_true_wordle_prior()
@@ -103,7 +103,7 @@ def find_best_two_step_entropy():
     return double_ents
 
 
-def find_smallest_second_guess_buckets(n_top_picks=100):
+def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right now, but seems like a utility function for additional analysis
     all_words = get_word_list()
     possibilities = get_word_list(short=True)
     priors = get_true_wordle_prior()
@@ -143,7 +143,7 @@ def find_smallest_second_guess_buckets(n_top_picks=100):
     return result
 
 
-def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False):
+def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False): # not being used right now, but finds answer in a different way probably?
     with open(SECOND_GUESS_MAP_FILE) as fp:
         all_sgms = json.load(fp)
 
@@ -179,7 +179,7 @@ def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False):
     return sgm
 
 
-def gather_entropy_to_score_data(first_guess="crane", priors=None):
+def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being used right now, but finds answer in a different way
     words = get_word_list()
     answers = get_word_list(short=True)
     if priors is None:
@@ -234,7 +234,7 @@ def simulate_games(first_guess=None,
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
 
-    if first_guess is None:
+    if first_guess is None: 
         first_guess = optimal_guess(
             all_words, all_words, priors
             # **choice_config
@@ -258,12 +258,12 @@ def simulate_games(first_guess=None,
     def get_next_guess(guesses, patterns, possibilities):
         phash = "".join(
             str(g) + "".join(map(str, pattern_to_int_list(p)))
-            for g, p in zip(guesses, patterns)
-        )
-        if second_guess_map is not None and len(patterns) == 1:
-            next_guess_map[phash] = second_guess_map[patterns[0]]
-        if phash not in next_guess_map:
-            choices = all_words
+            for g, p in zip(guesses, patterns) 
+        ) 
+        if second_guess_map is not None and len(patterns) == 1: 
+            next_guess_map[phash] = second_guess_map[patterns[0]] 
+        if phash not in next_guess_map: 
+            choices = all_words 
             if hard_mode:
                 for guess, pattern in zip(guesses, patterns):
                     choices = get_possible_words(guess, pattern, choices)
