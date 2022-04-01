@@ -366,7 +366,7 @@ if __name__ == "__main__":
     first_guess = "salet"
     results, decision_map = simulate_games(
         first_guess=first_guess,
-        priors=get_true_wordle_prior(),
+        priors=None,
         optimize_for_uniform_distribution=True,
         # shuffle=True,
         # brute_force_optimize=True,
