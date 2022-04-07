@@ -3,16 +3,20 @@ import json
 import logging as log
 import os
 import random
+import warnings
 
+import manimlib.utils as mu
 import numpy as np
-from helper_functions.color_patterns import *
-from helper_functions.get_data import *
 from algorithms.entropy import *
 from algorithms.second_guesses import *
-from solver.solvers import *
+from helper_functions.color_patterns import *
+from helper_functions.get_data import *
 from manimlib import *
-import manimlib.utils as mu
 from tqdm import tqdm as ProgressDisplay
+
+from solver.solvers import *
+
+warnings.filterwarnings("ignore")
 
 # Run simulated wordle games
 
