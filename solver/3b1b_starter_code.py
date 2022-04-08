@@ -367,7 +367,7 @@ def simulate_games(first_guess=None,
 
 
 if __name__ == "__main__":
-    first_guess = "salet"
+    first_guess = "slate"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
@@ -376,3 +376,13 @@ if __name__ == "__main__":
         # brute_force_optimize=True,
         # hard_mode=True,
     )
+
+# 3.978 avg and 9210 guesses with 'SALET'
+
+# 4.034 avg and 9339 guesses with 'SOARE'
+
+# 3.969 avg and 9189 guesses with 'CARSE'
+
+# 3.968 avg and 9186 guesses with 'TRACE'
+
+# 3.979 avg and 9211 guesses with 'SLATE'
