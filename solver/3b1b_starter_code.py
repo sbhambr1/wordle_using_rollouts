@@ -245,7 +245,8 @@ def simulate_games(first_guess=None,
         )
 
     if priors is None:
-        priors = get_frequency_based_priors()
+        # priors = get_frequency_based_priors()
+        priors = get_true_wordle_prior()
 
     if test_set is None:
         test_set = short_word_list
@@ -367,7 +368,7 @@ def simulate_games(first_guess=None,
 
 
 if __name__ == "__main__":
-    first_guess = "slate"
+    first_guess = "carse"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
@@ -377,12 +378,26 @@ if __name__ == "__main__":
         # hard_mode=True,
     )
 
-# 3.978 avg and 9210 guesses with 'SALET'
+# Frequency based priors:
 
-# 4.034 avg and 9339 guesses with 'SOARE'
+    # 3.978 avg and 9210 guesses with 'SALET'
 
-# 3.969 avg and 9189 guesses with 'CARSE'
+    # 4.034 avg and 9339 guesses with 'SOARE'
 
-# 3.968 avg and 9186 guesses with 'TRACE'
+    # 3.969 avg and 9189 guesses with 'CARSE'
 
-# 3.979 avg and 9211 guesses with 'SLATE'
+    # 3.968 avg and 9186 guesses with 'TRACE'
+
+    # 3.979 avg and 9211 guesses with 'SLATE'
+
+# True wordle priors:
+
+    # 3.430 avg and 7941 guesses with 'SALET'
+
+    # 3.464 avg and 8019 guesses with 'SOARE'
+
+    # 3.453 avg and 7993 guesses with 'CARSE'
+
+    # 3.434 avg and 7950 guesses with 'TRACE'
+
+    # 3.436 avg and 7954 guesses with 'SLATE'
