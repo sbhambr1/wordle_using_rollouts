@@ -21,7 +21,7 @@ def words_to_int_arrays(words):
     return np.array([[ord(c)for c in w] for w in words], dtype=np.uint8)
 
 
-def generate_pattern_matrix(words1, words2):
+def generate_pattern_matrix(words1, words2): # important function
     """
     A pattern for two words represents the wordle-similarity
     pattern (grey -> 0, yellow -> 1, green -> 2) but as an integer
@@ -148,12 +148,12 @@ def patterns_to_string(patterns):
     return "\n".join(map(pattern_to_string, patterns))
 
 
-def get_possible_words(guess, pattern, word_list):
+def get_possible_words(guess, pattern, word_list): # important function
     all_patterns = get_pattern_matrix([guess], word_list).flatten()
     return list(np.array(word_list)[all_patterns == pattern])
 
 
-def get_word_buckets(guess, possible_words):
+def get_word_buckets(guess, possible_words): # important function
     buckets = [[] for x in range(3**5)]
     hashes = get_pattern_matrix([guess], possible_words).flatten()
     for index, word in zip(hashes, possible_words):

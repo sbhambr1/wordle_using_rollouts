@@ -16,7 +16,7 @@ def get_guess_values_array(allowed_words, possible_words, priors, look_two_ahead
         for word in allowed_words
     ])
 
-    if look_two_ahead:
+    if look_two_ahead: # Extend this to multi-step lookahead
         # Look two steps out, but restricted to where second guess is
         # amoung the remaining possible words
         ents2 = np.zeros(ents1.shape)
@@ -129,20 +129,20 @@ def optimal_guess(allowed_words, possible_words, priors,
                   optimize_for_uniform_distribution=False,
                   purely_maximize_information=False,
                   ):
-    if purely_maximize_information:
-        if len(possible_words) == 1:
-            return possible_words[0]
-        weights = get_weights(possible_words, priors)
-        ents = get_entropies(allowed_words, possible_words, weights)
+    if purely_maximize_information: 
+        if len(possible_words) == 1: # If there's only one possible word, it's the answer
+            return possible_words[0] 
+        weights = get_weights(possible_words, priors) # Get the weights
+        ents = get_entropies(allowed_words, possible_words, weights) # Entropies of each word
         return allowed_words[np.argmax(ents)]
 
     # Just experimenting here...
-    if optimize_for_uniform_distribution:
-        expected_scores = get_score_lower_bounds(
+    if optimize_for_uniform_distribution: # If optimizing for uniform distribution
+        expected_scores = get_score_lower_bounds( 
             allowed_words, possible_words
         )
     else:
-        expected_scores = get_expected_scores(
+        expected_scores = get_expected_scores( 
             allowed_words, possible_words, priors,
             look_two_ahead=look_two_ahead
         )
