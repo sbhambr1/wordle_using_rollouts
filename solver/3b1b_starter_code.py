@@ -3,7 +3,7 @@ import json
 import logging as log
 import os
 import sys
-sys.path.append("..")
+sys.path.append(".")
 #sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'color_patterns')))
 import random
 
