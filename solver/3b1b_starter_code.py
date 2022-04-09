@@ -375,32 +375,34 @@ if __name__ == "__main__":
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
-        optimize_for_uniform_distribution=True,
+        optimize_for_uniform_distribution=False,
         # shuffle=True,
         # brute_force_optimize=True,
         # hard_mode=True,
     )
 
-# Frequency based priors:
+# Optimized for uniform distribution (no lookahead) | Using get expected scores with lookahead
 
-    # 3.978 avg and 9210 guesses with 'SALET'
+    # Frequency based priors:
 
-    # 4.034 avg and 9339 guesses with 'SOARE'
+        # 3.978 avg and 9210 guesses with 'SALET'
 
-    # 3.969 avg and 9189 guesses with 'CARSE'
+        # 4.034 avg and 9339 guesses with 'SOARE'
 
-    # 3.968 avg and 9186 guesses with 'TRACE'
+        # 3.969 avg and 9189 guesses with 'CARSE'
 
-    # 3.979 avg and 9211 guesses with 'SLATE'
+        # 3.968 avg and 9186 guesses with 'TRACE'
 
-# True wordle priors:
+        # 3.979 avg and 9211 guesses with 'SLATE'
 
-    # 3.430 avg and 7941 guesses with 'SALET'
+    # True wordle priors:
 
-    # 3.464 avg and 8019 guesses with 'SOARE'
+        # 3.430 avg and 7941 guesses with 'SALET'
 
-    # 3.453 avg and 7993 guesses with 'CARSE'
+        # 3.464 avg and 8019 guesses with 'SOARE'
 
-    # 3.434 avg and 7950 guesses with 'TRACE'
+        # 3.453 avg and 7993 guesses with 'CARSE'
 
-    # 3.436 avg and 7954 guesses with 'SLATE'
+        # 3.434 avg and 7950 guesses with 'TRACE'
+
+        # 3.436 avg and 7954 guesses with 'SLATE'
