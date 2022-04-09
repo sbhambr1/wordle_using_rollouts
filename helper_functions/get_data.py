@@ -1,9 +1,12 @@
 import json
-import os
 import math
+import os
+import warnings
 
 import numpy as np
 from manimlib import *
+
+warnings.filterwarnings("ignore")
 
 
 DATA_DIR = os.path.join(

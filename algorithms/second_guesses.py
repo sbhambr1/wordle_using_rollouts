@@ -1,9 +1,14 @@
+import warnings
+
 import numpy as np
 from helper_functions.color_patterns import *
 from helper_functions.get_data import *
-from algorithms.entropy import *
 from manimlib import *
 from tqdm import tqdm as ProgressDisplay
+
+from algorithms.entropy import *
+
+warnings.filterwarnings("ignore")
 
 # Functions to analyze second guesses
 
