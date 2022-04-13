@@ -1,13 +1,18 @@
+import warnings
+
 import numpy as np
 from helper_functions.color_patterns import *
 from helper_functions.get_data import *
-from algorithms.entropy import *
 from manimlib import *
 from tqdm import tqdm as ProgressDisplay
 
+from algorithms.entropy import *
+
+warnings.filterwarnings("ignore")
+
 # Functions to analyze second guesses
 
-def get_average_second_step_entropies(first_guesses, allowed_second_guesses, possible_words, priors):
+def get_average_second_step_entropies(first_guesses, allowed_second_guesses, possible_words, priors): # TODO: Make this work for multi-step lookahead
     result = []
     weights = get_weights(possible_words, priors)
     if weights.sum() == 0:

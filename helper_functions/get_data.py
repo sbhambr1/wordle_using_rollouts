@@ -1,9 +1,12 @@
 import json
-import os
 import math
+import os
+import warnings
 
 import numpy as np
 from manimlib import *
+
+warnings.filterwarnings("ignore")
 
 
 DATA_DIR = os.path.join(
@@ -13,7 +16,7 @@ DATA_DIR = os.path.join(
 
 SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
 LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
-WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_freqs_full.txt")
+WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_frequencies.txt")
 WORD_FREQ_MAP_FILE = os.path.join(DATA_DIR, "freq_map.json")
 SECOND_GUESS_MAP_FILE = os.path.join(DATA_DIR, "second_guess_map.json")
 PATTERN_MATRIX_FILE = os.path.join(DATA_DIR, "pattern_matrix.npy")
@@ -63,16 +66,16 @@ def get_frequency_based_priors(n_common=3000, width_under_sigmoid=10):
 
     Sort the words by frequency, then apply a sigmoid along it.
     """
-    freq_map = get_word_frequencies()
-    words = np.array(list(freq_map.keys()))
-    freqs = np.array([freq_map[w] for w in words])
-    arg_sort = freqs.argsort()
-    sorted_words = words[arg_sort]
+    freq_map = get_word_frequencies() # {word: freq}
+    words = np.array(list(freq_map.keys())) # [word]
+    freqs = np.array([freq_map[w] for w in words]) # [freq]
+    arg_sort = freqs.argsort() 
+    sorted_words = words[arg_sort] 
 
     # We want to imagine taking this sorted list, and putting it on a number
     # line so that it's length is 10, situating it so that the n_common most common
     # words are positive, then applying a sigmoid
-    x_width = width_under_sigmoid
+    x_width = width_under_sigmoid 
     c = x_width * (-0.5 + n_common / len(words))
     xs = np.linspace(c - x_width / 2, c + x_width / 2, len(words))
     priors = dict()
