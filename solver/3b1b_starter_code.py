@@ -364,6 +364,7 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     first_guess = "salet"
+    # second_guess_map = get_optimal_second_guess_map(first_guess)
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=get_true_wordle_prior(),
