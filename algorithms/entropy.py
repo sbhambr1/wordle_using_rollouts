@@ -80,3 +80,13 @@ def get_bucket_counts(allowed_words, possible_words):
     """
     bucket_sizes = get_bucket_sizes(allowed_words, possible_words)
     return (bucket_sizes > 0).sum(1)
+
+def prune_allowed_words(allowed_words, possible_words):
+    """
+    Returns a list of words in allowed_words which have at least one character common with a word in possible_words
+    """
+    chars = set()
+    for word in possible_words:
+        letters = [word[i] for i in range(5)]
+        chars.update(letters)
+    return [word for word in allowed_words if any(c in word for c in chars)]

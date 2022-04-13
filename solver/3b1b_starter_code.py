@@ -3,9 +3,11 @@ import json
 import logging as log
 import os
 import sys
+
 sys.path.append(".")
 #sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'color_patterns')))
 import random
+import time
 import warnings
 
 import manimlib.utils as mu
@@ -248,8 +250,8 @@ def simulate_games(first_guess=None,
         )
 
     if priors is None:
-        priors = get_frequency_based_priors()
-        # priors = get_true_wordle_prior()
+        # priors = get_frequency_based_priors()
+        priors = get_true_wordle_prior()
 
     if test_set is None:
         test_set = short_word_list
@@ -271,7 +273,7 @@ def simulate_games(first_guess=None,
         if second_guess_map is not None and len(patterns) == 1: 
             next_guess_map[phash] = second_guess_map[patterns[0]] 
         if phash not in next_guess_map: 
-            choices = all_words 
+            choices = prune_allowed_words(all_words, possibilities)
             if hard_mode:
                 for guess, pattern in zip(guesses, patterns):
                     choices = get_possible_words(guess, pattern, choices)
@@ -371,15 +373,19 @@ def simulate_games(first_guess=None,
     return final_result, next_guess_map
 
 
+
+
 if __name__ == "__main__":
-    first_guess = "slate"
+    start_time = time.time()
+    first_guess = "dealt"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
-        look_two_ahead=True,
+        look_two_ahead=False,
         optimize_for_uniform_distribution=False,
         # shuffle=True,
         # brute_force_optimize=True,
         # hard_mode=True,
     )
+    print("--- %s seconds ---" % (time.time() - start_time))
 
