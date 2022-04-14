@@ -3,9 +3,11 @@ import json
 import logging as log
 import os
 import sys
+
 sys.path.append(".")
 #sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'color_patterns')))
 import random
+import time
 import warnings
 
 import manimlib.utils as mu
@@ -271,7 +273,7 @@ def simulate_games(first_guess=None,
         if second_guess_map is not None and len(patterns) == 1: 
             next_guess_map[phash] = second_guess_map[patterns[0]] 
         if phash not in next_guess_map: 
-            choices = all_words 
+            choices = prune_allowed_words(all_words, possibilities)
             if hard_mode:
                 for guess, pattern in zip(guesses, patterns):
                     choices = get_possible_words(guess, pattern, choices)
@@ -284,6 +286,7 @@ def simulate_games(first_guess=None,
                 next_guess_map[phash] = optimal_guess(
                     choices, possibilities, priors,
                     look_two_ahead=look_two_ahead,
+                    look_three_ahead=False,
                     purely_maximize_information=purely_maximize_information,
                     optimize_for_uniform_distribution=optimize_for_uniform_distribution,
                 )
@@ -370,39 +373,19 @@ def simulate_games(first_guess=None,
     return final_result, next_guess_map
 
 
+
+
 if __name__ == "__main__":
+    start_time = time.time()
     first_guess = "carse"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
+        look_two_ahead=True,
         optimize_for_uniform_distribution=False,
         # shuffle=True,
         # brute_force_optimize=True,
-        # hard_mode=True,
+        hard_mode=True,
     )
+    print("--- %s seconds ---" % (time.time() - start_time))
 
-# Optimized for uniform distribution (no lookahead) | Using get expected scores with lookahead
-
-    # Frequency based priors:
-
-        # 3.978 avg and 9210 guesses with 'SALET'
-
-        # 4.034 avg and 9339 guesses with 'SOARE'
-
-        # 3.969 avg and 9189 guesses with 'CARSE'
-
-        # 3.968 avg and 9186 guesses with 'TRACE'
-
-        # 3.979 avg and 9211 guesses with 'SLATE'
-
-    # True wordle priors:
-
-        # 3.430 avg and 7941 guesses with 'SALET'
-
-        # 3.464 avg and 8019 guesses with 'SOARE'
-
-        # 3.453 avg and 7993 guesses with 'CARSE'
-
-        # 3.434 avg and 7950 guesses with 'TRACE'
-
-        # 3.436 avg and 7954 guesses with 'SLATE'
