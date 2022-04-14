@@ -377,15 +377,15 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guess = "dealt"
+    first_guess = "carse"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
-        look_two_ahead=False,
+        look_two_ahead=True,
         optimize_for_uniform_distribution=False,
         # shuffle=True,
         # brute_force_optimize=True,
-        # hard_mode=True,
+        hard_mode=True,
     )
     print("--- %s seconds ---" % (time.time() - start_time))
 

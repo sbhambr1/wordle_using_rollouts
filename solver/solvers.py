@@ -7,6 +7,7 @@ from helper_functions.color_patterns import *
 from helper_functions.get_data import *
 from manimlib import *
 from tqdm import tqdm as ProgressDisplay
+import multiprocessing
 
 warnings.filterwarnings("ignore")
 
@@ -52,12 +53,8 @@ def entropy_to_expected_score(ent):
     # we add a line which connects (0, 0) to (3.5, 11.5)
     return min_score + 1.5 * ent / 11.5
 
-def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
-        for i in range(look_ahead_steps):
-            sorted_indices = np.argsort(expected_scores)
-            allowed_second_guesses = get_word_list()
-            expected_scores += 1  # Push up the rest
-            for i in ProgressDisplay(sorted_indices[:n_top_candidates], leave=False):
+
+def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H1s, weights, word_to_weight, allowed_second_guesses):
                 guess = allowed_words[i]
                 H1 = H1s[i]
                 dist = get_pattern_distributions([guess], possible_words, weights)[0]
@@ -86,6 +83,52 @@ def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, l
                         for p, g2, H2 in zip(dist, second_guesses, H2s)
                     ))
                 ))
+                return expected_scores
+
+
+def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
+        for i in range(look_ahead_steps):
+            sorted_indices = np.argsort(expected_scores)
+            allowed_second_guesses = allowed_words
+            expected_scores += 1  # Push up the rest
+            
+            arg_list=[]
+            for j in sorted_indices[:n_top_candidates]:
+                tup = (j, expected_scores, allowed_words, possible_words, priors, H0, H1s, weights, word_to_weight, allowed_second_guesses)
+                arg_list.append(tup)
+            
+            thread_pool = multiprocessing.Pool()
+            expected_scores = thread_pool.starmap(get_score_i, arg_list, chunksize=5)
+
+            # for i in ProgressDisplay(sorted_indices[:n_top_candidates], leave=False):
+            #     guess = allowed_words[i]
+            #     H1 = H1s[i]
+            #     dist = get_pattern_distributions([guess], possible_words, weights)[0]
+            #     buckets = get_word_buckets(guess, possible_words)
+            #     second_guesses = [
+            #         optimal_guess(allowed_second_guesses, bucket, priors, look_two_ahead=False)
+            #         for bucket in buckets
+            #     ]
+            #     H2s = [
+            #         get_entropies([guess2], bucket, get_weights(bucket, priors))[0]
+            #         for guess2, bucket in zip(second_guesses, buckets)
+            #     ]
+            
+            #     prob = word_to_weight.get(guess, 0)
+            #     expected_scores[i] = sum((
+            #         # 1 times Probability guess1 is correct
+            #         1 * prob,
+            #         # 2 times probability guess2 is correct
+            #         2 * (1 - prob) * sum(
+            #             p * word_to_weight.get(g2, 0)
+            #             for p, g2 in zip(dist, second_guesses)
+            #         ),
+            #         # 2 plus expected score two steps from now
+            #         (1 - prob) * (2 + sum(
+            #             p * (1 - word_to_weight.get(g2, 0)) * entropy_to_expected_score(H0 - H1 - H2)
+            #             for p, g2, H2 in zip(dist, second_guesses, H2s)
+            #         ))
+            #     ))
         return expected_scores
 
 def get_expected_scores_with_3lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
