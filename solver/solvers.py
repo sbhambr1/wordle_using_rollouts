@@ -259,7 +259,9 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     # For the suggestions with the top expected scores, just
     # actually play the game out from this point to see what
     # their actual scores are, and minimize.
-    expected_scores = get_score_lower_bounds(all_words, possible_words)
+
+    # expected_scores = get_score_lower_bounds(all_words, possible_words)
+    expected_scores = get_expected_scores(all_words, possible_words, priors)
     top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]]
     true_average_scores = []
     if display_progress:
@@ -287,7 +289,8 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                 # subcalls
                 guess = optimal_guess(
                     all_words, possibilities, priors,
-                    optimize_for_uniform_distribution=True
+                    optimize_for_uniform_distribution=False,
+                    purely_maximize_information=False
                 )
                 score += 1
             scores.append(score)
