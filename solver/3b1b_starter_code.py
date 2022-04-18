@@ -250,8 +250,8 @@ def simulate_games(first_guess=None,
         )
 
     if priors is None:
-        # priors = get_frequency_based_priors()
-        priors = get_true_wordle_prior()
+        priors = get_frequency_based_priors()
+        # priors = get_true_wordle_prior()
 
     if test_set is None:
         test_set = short_word_list
@@ -314,21 +314,21 @@ def simulate_games(first_guess=None,
             possibilities = get_possible_words(guess, pattern, possibilities)
             possibility_counts.append(len(possibilities))
             score += 1
-            if score >= 3:
-                # do bruteforce optimization
-                phash = "".join(
-                str(g) + "".join(map(str, pattern_to_int_list(p)))
-                for g, p in zip(guesses, patterns))
-                if second_guess_map is not None and len(patterns) == 1: 
-                    next_guess_map[phash] = second_guess_map[patterns[0]] 
-                if phash not in next_guess_map:
-                    choices = prune_allowed_words(all_words, possibilities)
-                    next_guess_map[phash] = brute_force_optimal_guess(
-                    choices, possibilities, priors,
-                    n_top_picks=brute_force_depth)
-                guess = next_guess_map[phash]
-            else:
-                guess = get_next_guess(guesses, patterns, possibilities)
+            # if score >= 3:
+            #     # do bruteforce optimization
+            #     phash = "".join(
+            #     str(g) + "".join(map(str, pattern_to_int_list(p)))
+            #     for g, p in zip(guesses, patterns))
+            #     if second_guess_map is not None and len(patterns) == 1: 
+            #         next_guess_map[phash] = second_guess_map[patterns[0]] 
+            #     if phash not in next_guess_map:
+            #         choices = prune_allowed_words(all_words, possibilities)
+            #         next_guess_map[phash] = brute_force_optimal_guess(
+            #         choices, possibilities, priors,
+            #         n_top_picks=brute_force_depth)
+            #     guess = next_guess_map[phash]
+            # else:
+            guess = get_next_guess(guesses, patterns, possibilities)
 
         # Accumulate stats
         scores = np.append(scores, [score])
@@ -391,7 +391,7 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guess = "dealt"
+    first_guess = "salet"
     results, decision_map = simulate_games(
         first_guess=first_guess,
         priors=None,
