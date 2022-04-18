@@ -89,7 +89,7 @@ def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H
 def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
         for i in range(look_ahead_steps):
             sorted_indices = np.argsort(expected_scores)
-            allowed_second_guesses = allowed_words
+            allowed_second_guesses = get_word_list()
             expected_scores += 1  # Push up the rest
             
             arg_list=[]
