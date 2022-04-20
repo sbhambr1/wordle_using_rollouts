@@ -238,7 +238,7 @@ def simulate_games(first_guess=None,
                    brute_force_depth=10,
                    results_file=None,
                    next_guess_map_file=None,
-                   quiet=False,
+                   quiet=True,
                    ):
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
@@ -348,27 +348,27 @@ def simulate_games(first_guess=None,
             reductions=possibility_counts,
         ))
         # Print outcome
-        if not quiet:
-            message = "\n".join([
-                "",
-                f"Score: {score}",
-                f"Answer: {answer}",
-                f"Guesses: {guesses}",
-                f"Reductions: {possibility_counts}",
-                *patterns_to_string((*patterns, 3**5 - 1)).split("\n"),
-                *" " * (6 - len(patterns)),
-                f"Distribution: {score_dist}",
-                f"Total guesses: {total_guesses}",
-                f"Average: {average}",
-                *" " * 2,
-            ])
-            if answer is not test_set[0]:
-                # Move cursor back up to the top of the message
-                n = len(message.split("\n")) + 1
-                print(("\033[F\033[K") * n)
-            else:
-                print("\r\033[K\n")
-            print(message)
+        # if not quiet:
+        #     message = "\n".join([
+        #         "",
+        #         f"Score: {score}",
+        #         f"Answer: {answer}",
+        #         f"Guesses: {guesses}",
+        #         f"Reductions: {possibility_counts}",
+        #         *patterns_to_string((*patterns, 3**5 - 1)).split("\n"),
+        #         *" " * (6 - len(patterns)),
+        #         f"Distribution: {score_dist}",
+        #         f"Total guesses: {total_guesses}",
+        #         f"Average: {average}",
+        #         *" " * 2,
+        #     ])
+        #     if answer is not test_set[0]:
+        #         # Move cursor back up to the top of the message
+        #         n = len(message.split("\n")) + 1
+        #         print(("\033[F\033[K") * n)
+        #     else:
+        #         print("\r\033[K\n")
+        #     print(message)
 
     final_result = dict(
         score_distribution=score_dist,
@@ -378,11 +378,11 @@ def simulate_games(first_guess=None,
     )
 
     # Save results
-    for obj, file in [(final_result, results_file), (next_guess_map, next_guess_map_file)]:
-        if file:
-            path = os.path.join(DATA_DIR, "simulation_results", file)
-            with open(path, 'w') as fp:
-                json.dump(obj, fp)
+    # for obj, file in [(final_result, results_file), (next_guess_map, next_guess_map_file)]:
+    #     if file:
+    #         path = os.path.join(DATA_DIR, "simulation_results", file)
+    #         with open(path, 'w') as fp:
+    #             json.dump(obj, fp)
 
     return final_result, next_guess_map
 
@@ -391,15 +391,27 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guess = "dealt"
-    results, decision_map = simulate_games(
-        first_guess=first_guess,
-        priors=None,
-        look_two_ahead=False,
-        optimize_for_uniform_distribution=False,
-        # shuffle=True,
-        # brute_force_optimize=True,
-        hard_mode=True,
-    )
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    for first_guess in first_guesses:
+        print(first_guess)
+        results, decision_map = simulate_games(
+            first_guess=first_guess,
+            priors=None,
+            look_two_ahead=False,
+            optimize_for_uniform_distribution=False,
+            hard_mode=False,
+        )
+        print(results["score_distribution"], results["total_guesses"], results["average_score"])
+
+    for first_guess in first_guesses:
+        results, decision_map = simulate_games(
+            first_guess=first_guess,
+            priors=None,
+            look_two_ahead=False,
+            optimize_for_uniform_distribution=False,
+            hard_mode=True,
+        )
+        print(results)
+
     print("--- %s seconds ---" % (time.time() - start_time))
 
