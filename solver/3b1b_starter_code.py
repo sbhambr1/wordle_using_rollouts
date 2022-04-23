@@ -274,6 +274,8 @@ def simulate_games(first_guess=None,
             next_guess_map[phash] = second_guess_map[patterns[0]] 
         if phash not in next_guess_map: 
             choices = prune_allowed_words(all_words, possibilities)
+            # print('inside get_next_guess 3b1b line 277')
+            # print(len(choices))
             if hard_mode:
                 for guess, pattern in zip(guesses, patterns):
                     choices = get_possible_words(guess, pattern, choices)
@@ -287,7 +289,7 @@ def simulate_games(first_guess=None,
                     choices, possibilities, priors,
                     look_two_ahead=look_two_ahead,
                     look_three_ahead=False,
-                    purely_maximize_information=purely_maximize_information,
+                    purely_maximize_information=True,
                     optimize_for_uniform_distribution=optimize_for_uniform_distribution,
                 )
         return next_guess_map[phash]
@@ -323,6 +325,8 @@ def simulate_games(first_guess=None,
                     next_guess_map[phash] = second_guess_map[patterns[0]] 
                 if phash not in next_guess_map:
                     choices = prune_allowed_words(all_words, possibilities)
+                    # print('inside rollout 3b1b line 327')
+                    # print(len(choices))
                     next_guess_map[phash] = brute_force_optimal_guess(
                     choices, possibilities, priors,
                     n_top_picks=brute_force_depth)
@@ -399,19 +403,20 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-            hard_mode=False,
+            hard_mode=True,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
 
-    for first_guess in first_guesses:
-        results, decision_map = simulate_games(
-            first_guess=first_guess,
-            priors=None,
-            look_two_ahead=False,
-            optimize_for_uniform_distribution=False,
-            hard_mode=True,
-        )
-        print(results)
+    # for first_guess in first_guesses:
+    #     print(first_guess)
+    #     results, decision_map = simulate_games(
+    #         first_guess=first_guess,
+    #         priors=None,
+    #         look_two_ahead=False,
+    #         optimize_for_uniform_distribution=False,
+    #         hard_mode=True,
+    #     )
+    #     print(results["score_distribution"], results["total_guesses"], results["average_score"])
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
