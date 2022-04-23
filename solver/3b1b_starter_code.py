@@ -250,8 +250,8 @@ def simulate_games(first_guess=None,
         )
 
     if priors is None:
-        # priors = get_frequency_based_priors()
-        priors = get_true_wordle_prior()
+        priors = get_frequency_based_priors()
+        # priors = get_true_wordle_prior()
 
     if test_set is None:
         test_set = short_word_list
@@ -316,7 +316,7 @@ def simulate_games(first_guess=None,
             possibilities = get_possible_words(guess, pattern, possibilities)
             possibility_counts.append(len(possibilities))
             score += 1
-            if score >= 3:
+            if score >= 100:
                 # do bruteforce optimization
                 phash = "".join(
                 str(g) + "".join(map(str, pattern_to_int_list(p)))
@@ -403,7 +403,7 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-            hard_mode=True,
+            hard_mode=False,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
 
