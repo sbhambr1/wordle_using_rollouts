@@ -257,7 +257,7 @@ def optimal_guess(allowed_words, possible_words, priors,
         )
     return allowed_words[np.argmin(expected_scores)]
 
-def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=500, display_progress=False): #n_top_picks=10 also takes a long time, use this for the end_game
+def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, display_progress=False): #n_top_picks=10 also takes a long time, use this for the end_game
     if len(possible_words) == 1: # If there's only one possible word, it's the answer
         return possible_words[0]
 
@@ -269,6 +269,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=500
     # expected_scores = get_expected_scores(all_words, possible_words, priors)
     expected_scores = get_entropy_scores(all_words, possible_words, priors)
     top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
+    top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
     true_average_scores = []
     if display_progress:
         iterable = ProgressDisplay(
@@ -279,6 +280,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=500
     else:
         iterable = top_choices
 
+    i = 0
     for next_guess in iterable:
         scores = []
         for answer in possible_words:
@@ -300,7 +302,8 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=500
                 )
                 score += 1
             scores.append(score)
-        true_average_scores.append(np.mean(scores))
+        true_average_scores.append(np.mean(scores)+1-top_entropies[i])
+        i += 1
     return top_choices[np.argmin(true_average_scores)]
 
 if __name__ == "__main__":
