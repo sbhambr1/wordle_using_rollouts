@@ -53,7 +53,6 @@ def entropy_to_expected_score(ent):
     # we add a line which connects (0, 0) to (3.5, 12.54)
     return min_score + 1.5 * ent / 12.54
 
-
 def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H1s, weights, word_to_weight, allowed_second_guesses):
                 guess = allowed_words[i]
                 H1 = H1s[i]
@@ -84,7 +83,6 @@ def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H
                     ))
                 ))
                 return expected_scores
-
 
 def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
         for i in range(look_ahead_steps):
@@ -227,6 +225,13 @@ def get_score_lower_bounds(allowed_words, possible_words):
     p3s = 1 - bucket_counts / N
     return p1s + 2 * p2s + 3 * p3s
 
+def get_entropy_scores(allowed_words, possible_words, priors):
+    if len(possible_words) == 1: # If there's only one possible word, it's the answer
+        return possible_words[0] 
+    weights = get_weights(possible_words, priors) # Get the weights
+    ents = get_entropies(allowed_words, possible_words, weights) # Entropies of each word
+    return ents
+
 def optimal_guess(allowed_words, possible_words, priors,
                   look_two_ahead=False,
                   look_three_ahead=False,
@@ -253,16 +258,18 @@ def optimal_guess(allowed_words, possible_words, priors,
     return allowed_words[np.argmin(expected_scores)]
 
 def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, display_progress=False): #n_top_picks=10 also takes a long time, use this for the end_game
-    if len(possible_words) == 0:
-        # Doesn't matter what to return in this case, so just default to first word in list.
-        return all_words[0]
+    if len(possible_words) == 1: # If there's only one possible word, it's the answer
+        return possible_words[0]
+
     # For the suggestions with the top expected scores, just
     # actually play the game out from this point to see what
     # their actual scores are, and minimize.
 
     # expected_scores = get_score_lower_bounds(all_words, possible_words)
-    expected_scores = get_expected_scores(all_words, possible_words, priors)
-    top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]]
+    # expected_scores = get_expected_scores(all_words, possible_words, priors)
+    expected_scores = get_entropy_scores(all_words, possible_words, priors)
+    top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
+    top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
     true_average_scores = []
     if display_progress:
         iterable = ProgressDisplay(
@@ -273,6 +280,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     else:
         iterable = top_choices
 
+    i = 0
     for next_guess in iterable:
         scores = []
         for answer in possible_words:
@@ -290,11 +298,12 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                 guess = optimal_guess(
                     all_words, possibilities, priors,
                     optimize_for_uniform_distribution=False,
-                    purely_maximize_information=False
+                    purely_maximize_information=True
                 )
                 score += 1
             scores.append(score)
-        true_average_scores.append(np.mean(scores))
+        true_average_scores.append(np.mean(scores)+1-top_entropies[i])
+        i += 1
     return top_choices[np.argmin(true_average_scores)]
 
 if __name__ == "__main__":
