@@ -403,8 +403,8 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-            brute_force_depth=10,
-            hard_mode=True,
+            brute_force_depth=100,
+            hard_mode=False,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
 
