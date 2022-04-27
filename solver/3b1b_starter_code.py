@@ -298,6 +298,7 @@ def simulate_games(first_guess=None,
     # and keep track of the stats.
     scores = np.zeros(0, dtype=int)
     game_results = []
+    tracking_dict = {}
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         guesses = []
         patterns = []
@@ -306,7 +307,7 @@ def simulate_games(first_guess=None,
 
         if exclude_seen_words:
             possibilities = list(filter(lambda w: w not in seen, possibilities))
-
+        #answer = "wound" ##checking
         score = 1
         guess = first_guess
         while guess != answer:
@@ -316,24 +317,36 @@ def simulate_games(first_guess=None,
             possibilities = get_possible_words(guess, pattern, possibilities)
             possibility_counts.append(len(possibilities))
             score += 1
-            if score >= 3:
-                # do bruteforce optimization
-                phash = "".join(
-                str(g) + "".join(map(str, pattern_to_int_list(p)))
-                for g, p in zip(guesses, patterns))
-                if second_guess_map is not None and len(patterns) == 1: 
-                    next_guess_map[phash] = second_guess_map[patterns[0]] 
-                if phash not in next_guess_map:
-                    choices = prune_allowed_words(all_words, possibilities)
-                    # print('inside rollout 3b1b line 327')
-                    # print(len(choices))
-                    next_guess_map[phash] = brute_force_optimal_guess(
-                    choices, possibilities, priors,
-                    n_top_picks=brute_force_depth)
-                guess = next_guess_map[phash]
-            else:
-                guess = get_next_guess(guesses, patterns, possibilities)
+            # if score >= 3:
+            #     # do bruteforce optimization
+            #     phash = "".join(
+            #     str(g) + "".join(map(str, pattern_to_int_list(p)))
+            #     for g, p in zip(guesses, patterns))
+            #     if second_guess_map is not None and len(patterns) == 1: 
+            #         next_guess_map[phash] = second_guess_map[patterns[0]] 
+                
+            #     if phash not in next_guess_map:
+            #         choices = prune_allowed_words(all_words, possibilities)
+            #         # print('inside rollout 3b1b line 327')
+            #         # print(len(choices))
 
+            #         if hard_mode:
+            #             for guess, pattern in zip(guesses, patterns):
+            #                 choices = get_possible_words(guess, pattern, choices)
+
+            #         next_guess_map[phash] = brute_force_optimal_guess(
+            #         choices, possibilities, priors,
+            #         n_top_picks=brute_force_depth)
+            #     guess = next_guess_map[phash]
+            # else:
+            guess = get_next_guess(guesses, patterns, possibilities)
+        guesses.append(guess)
+        # if score>6:
+        #     tracking_dict[answer] = guesses
+
+        # if answer=="wound":
+        #     print("Guesses for answer wound:")
+        #     print(guesses)
         # Accumulate stats
         scores = np.append(scores, [score])
         score_dist = [
@@ -351,6 +364,8 @@ def simulate_games(first_guess=None,
             patterns=list(map(int, patterns)),
             reductions=possibility_counts,
         ))
+
+        
         # Print outcome
         # if not quiet:
         #     message = "\n".join([
@@ -388,7 +403,7 @@ def simulate_games(first_guess=None,
     #         with open(path, 'w') as fp:
     #             json.dump(obj, fp)
 
-    return final_result, next_guess_map
+    return final_result, next_guess_map, tracking_dict
 
 
 
@@ -396,17 +411,22 @@ def simulate_games(first_guess=None,
 if __name__ == "__main__":
     start_time = time.time()
     first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    #first_guesses = ["salet"]
+
     for first_guess in first_guesses:
         print(first_guess)
-        results, decision_map = simulate_games(
+        results, decision_map, tracking_failure = simulate_games(
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-            brute_force_depth=100,
-            hard_mode=False,
+            brute_force_optimize=True,
+            brute_force_depth=10,
+            hard_mode=True,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
+        # print("failure cases:")
+        # print(tracking_failure)
 
     # for first_guess in first_guesses:
     #     print(first_guess)
