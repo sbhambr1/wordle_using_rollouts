@@ -302,7 +302,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                 )
                 score += 1
             scores.append(score)
-        true_average_scores.append(np.mean(scores)+1-top_entropies[i])
+        true_average_scores.append(np.mean(scores)+1)
         i += 1
     return top_choices[np.argmin(true_average_scores)]
 
