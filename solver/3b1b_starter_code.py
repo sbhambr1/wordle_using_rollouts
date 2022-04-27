@@ -340,7 +340,7 @@ def simulate_games(first_guess=None,
             #     guess = next_guess_map[phash]
             # else:
             guess = get_next_guess(guesses, patterns, possibilities)
-        guesses.append(guess)
+        # guesses.append(guess)
         # if score>6:
         #     tracking_dict[answer] = guesses
 

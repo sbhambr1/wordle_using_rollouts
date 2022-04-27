@@ -267,9 +267,12 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     # expected_scores = get_score_lower_bounds(all_words, possible_words)
     #expected_scores = get_expected_scores(all_words, possible_words, priors)
+    
     expected_scores = get_entropy_scores(all_words, possible_words, priors)
     top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
-    top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
+    
+    # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
+
     true_average_scores = []
     if display_progress:
         iterable = ProgressDisplay(
