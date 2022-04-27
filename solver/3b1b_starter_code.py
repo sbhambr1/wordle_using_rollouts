@@ -250,8 +250,8 @@ def simulate_games(first_guess=None,
         )
 
     if priors is None:
-        # priors = get_frequency_based_priors()
-        priors = get_true_wordle_prior()
+        priors = get_frequency_based_priors()
+        # priors = get_true_wordle_prior()
 
     if test_set is None:
         test_set = short_word_list
@@ -289,7 +289,7 @@ def simulate_games(first_guess=None,
                     choices, possibilities, priors,
                     look_two_ahead=look_two_ahead,
                     look_three_ahead=False,
-                    purely_maximize_information=True,
+                    purely_maximize_information=False,
                     optimize_for_uniform_distribution=optimize_for_uniform_distribution,
                 )
         return next_guess_map[phash]
@@ -403,8 +403,8 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-            brute_force_depth=100,
-            hard_mode=False,
+            brute_force_depth=10,
+            hard_mode=True,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
 
