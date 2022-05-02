@@ -266,10 +266,22 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     # their actual scores are, and minimize.
 
     # expected_scores = get_score_lower_bounds(all_words, possible_words)
+<<<<<<< HEAD
     #expected_scores = get_expected_scores(all_words, possible_words, priors)
     expected_scores = get_entropy_scores(all_words, possible_words, priors)
     top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
     top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]]
+=======
+
+    expected_scores = get_entropy_scores(all_words, possible_words, priors) # for max info gain
+    top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
+    top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
+
+    # expected_scores = get_expected_scores(all_words, possible_words, priors) # for min expected score
+    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] #for min expected score
+    # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[:n_top_picks]] #for min expected score
+
+>>>>>>> eca2ebe9e8d4bf070d7692414e39e3ae03ffdc24
     true_average_scores = []
     if display_progress:
         iterable = ProgressDisplay(
@@ -302,6 +314,10 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                 )
                 score += 1
             scores.append(score)
+<<<<<<< HEAD
+=======
+        # true_average_scores.append(np.mean(scores)+1-top_entropies[i])
+>>>>>>> eca2ebe9e8d4bf070d7692414e39e3ae03ffdc24
         true_average_scores.append(np.mean(scores)+1)
         i += 1
     return top_choices[np.argmin(true_average_scores)]
