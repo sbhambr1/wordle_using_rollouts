@@ -421,10 +421,6 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_for_uniform_distribution=False,
-<<<<<<< HEAD
-            brute_force_optimize=False,
-=======
->>>>>>> eca2ebe9e8d4bf070d7692414e39e3ae03ffdc24
             brute_force_depth=10,
             hard_mode=True,
         )
