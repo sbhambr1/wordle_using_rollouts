@@ -285,7 +285,6 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     else:
         iterable = top_choices
 
-    i = 0
     for next_guess in iterable:
         scores = []
         for answer in possible_words:
@@ -305,11 +304,9 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                     optimize_for_uniform_distribution=False,
                     purely_maximize_information=True
                 )
-                score += 1
             scores.append(score)
         # true_average_scores.append(np.mean(scores)+1-top_entropies[i])
         true_average_scores.append(np.mean(scores)+1)
-        i += 1
     return top_choices[np.argmin(true_average_scores)]
 
 if __name__ == "__main__":
