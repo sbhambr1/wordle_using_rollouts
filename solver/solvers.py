@@ -6,6 +6,7 @@ from algorithms.second_guesses import *
 from helper_functions.color_patterns import *
 from helper_functions.get_data import *
 from manimlib import *
+import random
 from tqdm import tqdm as ProgressDisplay
 import multiprocessing
 
@@ -313,7 +314,13 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         ## TODO: @Sid: think about whether taking the average here makes sense
         ## I would think that actually harms performance in the hard mode
         true_average_scores.append(np.mean(scores)+1)
-    return top_choices[np.argmin(true_average_scores)]
+
+    min_indices = np.where(true_average_scores == np.amin(true_average_scores))
+    min_indices = min_indices[0]
+
+    ## TODO: @AB: try ascending order instead of the default descending alphabetical order. I expect performance to improve.
+
+    return top_choices[random.choice(min_indices)]
 
 if __name__ == "__main__":
 

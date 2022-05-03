@@ -57,7 +57,7 @@ def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): #
         first_guess = row[0]
         result, decision_map = simulate_games(
             first_guess, priors=priors,
-            optimize_for_uniform_distribution=True,
+            optimize_using_lower_bound=True,
             quiet=quiet,
             **kwargs,
         )
@@ -227,11 +227,11 @@ def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being 
 def simulate_games(first_guess=None,
                    priors=None,
                    look_two_ahead=False,
-                   optimize_for_uniform_distribution=False,
+                   optimize_using_lower_bound=False,
                    second_guess_map=None,
                    exclude_seen_words=False,
                    test_set=None,
-                   shuffle=False,
+                   shuffle=True,
                    hard_mode=False,
                    purely_maximize_information=False,
                    brute_force_optimize=False,
@@ -241,9 +241,13 @@ def simulate_games(first_guess=None,
                    results_file=None,
                    next_guess_map_file=None,
                    quiet=True,
+                   track_failures=False
                    ):
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
+
+    if track_failures:
+        tracking_dict = {}
 
     if first_guess is None: 
         first_guess = optimal_guess(
@@ -259,6 +263,7 @@ def simulate_games(first_guess=None,
         test_set = short_word_list  ## set test set as actual Wordle answer mystery list
 
     if shuffle:
+        print("shuffled")
         random.shuffle(test_set)
 
     seen = set()
@@ -291,7 +296,7 @@ def simulate_games(first_guess=None,
                 look_two_ahead=look_two_ahead,
                 look_three_ahead=False,
                 purely_maximize_information=True,
-                optimize_for_uniform_distribution=optimize_for_uniform_distribution
+                optimize_using_lower_bound=optimize_using_lower_bound
             )
             guess=computed_guess
         return guess
@@ -300,7 +305,7 @@ def simulate_games(first_guess=None,
     # and keep track of the stats.
     scores = np.zeros(0, dtype=int)
     game_results = []
-    tracking_dict = {}
+    
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         guesses = []
         patterns = []
@@ -324,14 +329,10 @@ def simulate_games(first_guess=None,
                 phash = "".join(
                 str(g) + "".join(map(str, pattern_to_int_list(p)))
                 for g, p in zip(guesses, patterns))
-                # if second_guess_map is not None and len(patterns) == 1: 
-                #     next_guess_map[phash] = second_guess_map[patterns[0]] 
                 
                 # if phash not in next_guess_map:
                 choices = prune_allowed_words(all_words, possibilities)
-                    # print('inside rollout 3b1b line 327')
-                    # print(len(choices))
-
+                
                 if hard_mode:
                     for guess, pattern in zip(guesses, patterns):
                         choices = get_possible_words(guess, pattern, choices)
@@ -345,11 +346,13 @@ def simulate_games(first_guess=None,
                 computed_guess = get_next_guess(guesses, patterns, possibilities)
                 guess=computed_guess
         guesses.append(guess)
-        # if score>6:
-        #     tracking_dict[answer] = guesses
+
+        if track_failures:
+            if score>6:
+                tracking_dict[answer] = guesses
 
         # if answer=="bound":
-        #     print("Guesses for answer pound:")
+        #     print("Guesses for answer bound:")
         #     print(guesses)
         #Accumulate stats
 
@@ -396,14 +399,20 @@ if __name__ == "__main__":
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
-            optimize_for_uniform_distribution=False,
+            optimize_using_lower_bound=False,
             rollout_begin_at=3,
             rollout_top_k=10,
             hard_mode=True,
             test_mode=False,
+            track_failures=True,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
-        break
+        # break
+
+        if tracking_failure is not None:
+            print("Failure case guesses: ")
+            print(tracking_failure)
+
         # print("failure cases:")
         # print(tracking_failure)
 

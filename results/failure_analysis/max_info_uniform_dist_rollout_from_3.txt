@@ -1,0 +1,74 @@
+salet
+[0, 98, 1081, 971, 136, 23, 5, 1] 8184 3.535205183585313                                                                                       
+Failure case guesses: 
+{'batch': ['salet', 'canty', 'watch', 'patch', 'match', 'hatch', 'batch'],
+'bound': ['salet', 'cornu', 'wound', 'pound', 'mound', 'hound', 'found', 'bound'],
+'boxer': ['salet', 'diner', 'rower', 'mover', 'poker', 'foyer', 'boxer'],
+'daunt': ['salet', 'tacit', 'haunt', 'vaunt', 'jaunt', 'gaunt', 'daunt'],
+'fight': ['salet', 'biont', 'right', 'wight', 'tight', 'might', 'fight'],
+'found': ['salet', 'cornu', 'wound', 'pound', 'mound', 'hound', 'found']}
+
+soare
+[0, 59, 1065, 957, 184, 42, 6, 2] 8371 3.6159827213822893                                                                                      
+Failure case guesses: 
+{'baste': ['soare', 'lapse', 'waste', 'taste', 'haste', 'caste', 'baste'],
+'batch': ['soare', 'canty', 'watch', 'patch', 'match', 'latch', 'hatch', 'batch'],
+'bound': ['soare', 'tondo', 'pownd', 'mound', 'hound', 'found', 'bound'],
+'daunt': ['soare', 'canty', 'taunt', 'vaunt', 'jaunt', 'haunt', 'gaunt', 'daunt'],
+'dilly': ['soare', 'clint', 'filmy', 'billy', 'willy', 'hilly', 'dilly'],
+'gaunt': ['soare', 'canty', 'taunt', 'vaunt', 'jaunt', 'haunt', 'gaunt'],
+'hatch': ['soare', 'canty', 'watch', 'patch', 'match', 'latch', 'hatch'],
+'shore': ['soare', 'score', 'swore', 'store', 'spore', 'snore', 'shore']}
+
+trace
+[1, 97, 1080, 938, 168, 24, 6, 1] 8221 3.5511879049676027                                                                                      
+Failure case guesses: 
+{'buyer': ['trace', 'riles', 'mower', 'under', 'queer', 'purer', 'buyer'],
+'catch': ['trace', 'batch', 'watch', 'patch', 'match', 'latch', 'hatch', 'catch'],
+'daunt': ['trace', 'alist', 'bahut', 'vaunt', 'jaunt', 'gaunt', 'daunt'],
+'dilly': ['trace', 'soily', 'billy', 'willy', 'hilly', 'filly', 'dilly'],
+'dolly': ['trace', 'soily', 'golly', 'jolly', 'holly', 'folly', 'dolly'],
+'fight': ['trace', 'hoist', 'wight', 'night', 'might', 'light', 'fight'],
+'hatch': ['trace', 'batch', 'watch', 'patch', 'match', 'latch', 'hatch']}
+
+slate
+[1, 84, 1096, 949, 150, 29, 5, 1] 8220 3.550755939524838                                                                                       
+Failure case guesses: 
+{'batch': ['slate', 'taint', 'datum', 'watap', 'hatch', 'catch', 'batch'],
+'bound': ['slate', 'cornu', 'wound', 'pound', 'mound', 'hound', 'found', 'bound'],
+'boxer': ['slate', 'diner', 'rower', 'mover', 'poker', 'foyer', 'boxer'],
+'caste': ['slate', 'baste', 'waste', 'taste', 'paste', 'haste', 'caste'],
+'daunt': ['slate', 'taint', 'vaunt', 'jaunt', 'haunt', 'gaunt', 'daunt'],
+'found': ['slate', 'cornu', 'wound', 'pound', 'mound', 'hound', 'found']}
+
+crane
+[1, 82, 1080, 971, 151, 24, 5, 1] 8231 3.5555075593952483                                                                                      
+Failure case guesses: 
+{'batch': ['crane', 'micas', 'watch', 'patch', 'latch', 'hatch', 'batch'],
+'bound': ['crane', 'stung', 'pound', 'wound', 'mound', 'hound', 'found', 'bound'],
+'boxer': ['crane', 'reset', 'lover', 'mower', 'poker', 'foyer', 'boxer'],
+'daunt': ['crane', 'tains', 'vaunt', 'jaunt', 'haunt', 'gaunt', 'daunt'],
+'dilly': ['crane', 'slipt', 'filmy', 'billy', 'willy', 'hilly', 'dilly'],
+'found': ['crane', 'stung', 'pound', 'wound', 'mound', 'hound', 'found']}
+
+dealt
+[1, 74, 1061, 1009, 143, 19, 6, 2] 8255 3.5658747300215983                                                                                     
+Failure case guesses: 
+{'baste': ['dealt', 'taser', 'waste', 'paste', 'haste', 'caste', 'baste'],
+'batty': ['dealt', 'tanty', 'ratty', 'patty', 'fatty', 'catty', 'batty'],
+'bound': ['dealt', 'rownd', 'sound', 'pound', 'mound', 'hound', 'found', 'bound'],
+'boxer': ['dealt', 'snore', 'mover', 'rower', 'poker', 'foyer', 'boxer'],
+'catch': ['dealt', 'tanty', 'batch', 'watch', 'patch', 'match', 'hatch', 'catch'],
+'found': ['dealt', 'rownd', 'sound', 'pound', 'mound', 'hound', 'found'],
+'hatch': ['dealt', 'tanty', 'batch', 'watch', 'patch', 'match', 'hatch'],
+'scout': ['dealt', 'roist', 'spout', 'stout', 'snout', 'shout', 'scout']}
+
+carse
+[0, 90, 1057, 990, 147, 27, 4] 8236 3.5576673866090713                                                                                         
+Failure case guesses: 
+{'batch': ['carse', 'macho', 'latch', 'watch', 'patch', 'hatch', 'batch'],
+'bound': ['carse', 'doilt', 'howdy', 'pound', 'mound', 'found', 'bound'],
+'boxer': ['carse', 'deter', 'liver', 'mower', 'gofer', 'poker', 'boxer'],
+'joker': ['carse', 'deter', 'liver', 'mower', 'gofer', 'poker', 'joker']}
+
+--- 450.8925597667694 seconds ---
