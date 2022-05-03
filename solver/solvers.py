@@ -235,8 +235,8 @@ def get_entropy_scores(allowed_words, possible_words, priors):
 def optimal_guess(allowed_words, possible_words, priors,
                   look_two_ahead=False,
                   look_three_ahead=False,
-                  optimize_for_uniform_distribution=False,
-                  purely_maximize_information=False,
+                  optimize_using_lower_bound=False,
+                  purely_maximize_information=True,
                   ):
     if purely_maximize_information: 
         if len(possible_words) == 1: # If there's only one possible word, it's the answer
@@ -246,7 +246,7 @@ def optimal_guess(allowed_words, possible_words, priors,
         return allowed_words[np.argmax(ents)]
 
     # Just experimenting here...
-    if optimize_for_uniform_distribution: # If optimizing for uniform distribution
+    if optimize_using_lower_bound: # If optimizing for uniform distribution
         expected_scores = get_score_lower_bounds( 
             allowed_words, possible_words
         )
@@ -270,6 +270,8 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     expected_scores = get_entropy_scores(all_words, possible_words, priors) # for max info gain
     top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
     top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
+
+    ## TODO: @Sid: shuffle elements of top choices that have same entropy. 
 
     # expected_scores = get_expected_scores(all_words, possible_words, priors) # for min expected score
     # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] #for min expected score
@@ -301,11 +303,15 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                 # subcalls
                 guess = optimal_guess(
                     all_words, possibilities, priors,
-                    optimize_for_uniform_distribution=False,
+                    optimize_using_lower_bound=False,
                     purely_maximize_information=True
                 )
+                score += 1
             scores.append(score)
         # true_average_scores.append(np.mean(scores)+1-top_entropies[i])
+
+        ## TODO: @Sid: think about whether taking the average here makes sense
+        ## I would think that actually harms performance in the hard mode
         true_average_scores.append(np.mean(scores)+1)
     return top_choices[np.argmin(true_average_scores)]
 
@@ -318,17 +324,17 @@ if __name__ == "__main__":
 
     # result = brute_force_optimal_guess(all_words, wordle_answers, priors, n_top_picks=10, display_progress=True) returns 'Salet' with both types of priors
 
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_for_uniform_distribution=False, purely_maximize_information=False) # returns 'Soare' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_for_uniform_distribution=False, purely_maximize_information=True) # returns 'Soare' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_for_uniform_distribution=True, purely_maximize_information=False) # returs 'Trace' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_for_uniform_distribution=True, purely_maximize_information=True) # returns 'Soare' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'Soare' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_using_lower_bound=False, purely_maximize_information=True) # returns 'Soare' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_using_lower_bound=True, purely_maximize_information=False) # returs 'Trace' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, optimize_using_lower_bound=True, purely_maximize_information=True) # returns 'Soare' with both types of priors
 
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_for_uniform_distribution=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_for_uniform_distribution=False, purely_maximize_information=True) # returns 'Soare' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_for_uniform_distribution=True, purely_maximize_information=False) # returs 'Trace' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_for_uniform_distribution=True, purely_maximize_information=True) # returns 'Soare' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=False, purely_maximize_information=True) # returns 'Soare' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=True, purely_maximize_information=False) # returs 'Trace' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=True, purely_maximize_information=True) # returns 'Soare' with both types of priors
 
-    result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, look_three_ahead=False ,optimize_for_uniform_distribution=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
-    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, look_three_ahead=True ,optimize_for_uniform_distribution=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
+    result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, look_three_ahead=False ,optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, look_three_ahead=True ,optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
     
     print(result)
