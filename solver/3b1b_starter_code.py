@@ -57,7 +57,7 @@ def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): #
         first_guess = row[0]
         result, decision_map = simulate_games(
             first_guess, priors=priors,
-            optimize_for_uniform_distribution=True,
+            optimize_using_lower_bound=True,
             quiet=quiet,
             **kwargs,
         )
@@ -227,21 +227,27 @@ def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being 
 def simulate_games(first_guess=None,
                    priors=None,
                    look_two_ahead=False,
-                   optimize_for_uniform_distribution=False,
+                   optimize_using_lower_bound=False,
                    second_guess_map=None,
                    exclude_seen_words=False,
                    test_set=None,
-                   shuffle=False,
+                   shuffle=True,
                    hard_mode=False,
                    purely_maximize_information=False,
                    brute_force_optimize=False,
-                   brute_force_depth=10,
+                   rollout_begin_at=3,
+                   rollout_top_k=10,
+                   test_mode=False,
                    results_file=None,
                    next_guess_map_file=None,
-                   quiet=False,
+                   quiet=True,
+                   track_failures=False
                    ):
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
+
+    if track_failures:
+        tracking_dict = {}
 
     if first_guess is None: 
         first_guess = optimal_guess(
@@ -254,9 +260,10 @@ def simulate_games(first_guess=None,
         priors = get_true_wordle_prior()
 
     if test_set is None:
-        test_set = short_word_list
+        test_set = short_word_list  ## set test set as actual Wordle answer mystery list
 
     if shuffle:
+        print("shuffled")
         random.shuffle(test_set)
 
     seen = set()
@@ -270,41 +277,44 @@ def simulate_games(first_guess=None,
             str(g) + "".join(map(str, pattern_to_int_list(p)))
             for g, p in zip(guesses, patterns) 
         ) 
-        if second_guess_map is not None and len(patterns) == 1: 
-            next_guess_map[phash] = second_guess_map[patterns[0]] 
-        if phash not in next_guess_map: 
-            choices = prune_allowed_words(all_words, possibilities)
-            if hard_mode:
-                for guess, pattern in zip(guesses, patterns):
-                    choices = get_possible_words(guess, pattern, choices)
-            if brute_force_optimize:
-                next_guess_map[phash] = brute_force_optimal_guess(
-                    choices, possibilities, priors,
-                    n_top_picks=brute_force_depth,
-                )
-            else:
-                next_guess_map[phash] = optimal_guess(
-                    choices, possibilities, priors,
-                    look_two_ahead=look_two_ahead,
-                    look_three_ahead=False,
-                    purely_maximize_information=purely_maximize_information,
-                    optimize_for_uniform_distribution=optimize_for_uniform_distribution,
-                )
-        return next_guess_map[phash]
+        
+        choices = prune_allowed_words(all_words, possibilities)
+        
+        ## replacing next_guess_map[phash] with computed_guess
+        if hard_mode:
+            for guess, pattern in zip(guesses, patterns):
+                choices = get_possible_words(guess, pattern, choices)
+        if brute_force_optimize:
+            computed_guess = brute_force_optimal_guess(
+                choices, possibilities, priors,
+                n_top_picks=rollout_top_k,
+            )
+            guess=computed_guess
+        else:
+            computed_guess = optimal_guess(
+                choices, possibilities, priors,
+                look_two_ahead=look_two_ahead,
+                look_three_ahead=False,
+                purely_maximize_information=True,
+                optimize_using_lower_bound=optimize_using_lower_bound
+            )
+            guess=computed_guess
+        return guess
 
     # Go through each answer in the test set, play the game,
     # and keep track of the stats.
     scores = np.zeros(0, dtype=int)
     game_results = []
+    
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         guesses = []
         patterns = []
         possibility_counts = []
-        possibilities = list(filter(lambda w: priors[w] > 0, all_words))
+        possibilities = list(filter(lambda w: priors[w] > 0, all_words))  ## here you are defining the priors over possible answers
 
         if exclude_seen_words:
             possibilities = list(filter(lambda w: w not in seen, possibilities))
-
+        # answer = "bound" ##checking
         score = 1
         guess = first_guess
         while guess != answer:
@@ -314,9 +324,38 @@ def simulate_games(first_guess=None,
             possibilities = get_possible_words(guess, pattern, possibilities)
             possibility_counts.append(len(possibilities))
             score += 1
-            guess = get_next_guess(guesses, patterns, possibilities)
+            if score >= rollout_begin_at:
+                # do bruteforce optimization
+                phash = "".join(
+                str(g) + "".join(map(str, pattern_to_int_list(p)))
+                for g, p in zip(guesses, patterns))
+                
+                # if phash not in next_guess_map:
+                choices = prune_allowed_words(all_words, possibilities)
+                
+                if hard_mode:
+                    for guess, pattern in zip(guesses, patterns):
+                        choices = get_possible_words(guess, pattern, choices)
 
-        # Accumulate stats
+                computed_guess = brute_force_optimal_guess(
+                choices, possibilities, priors,
+                n_top_picks=rollout_top_k)
+                guess=computed_guess
+                # guess = next_guess_map[phash]
+            else:
+                computed_guess = get_next_guess(guesses, patterns, possibilities)
+                guess=computed_guess
+        guesses.append(guess)
+
+        if track_failures:
+            if score>6:
+                tracking_dict[answer] = guesses
+
+        # if answer=="bound":
+        #     print("Guesses for answer bound:")
+        #     print(guesses)
+        #Accumulate stats
+
         scores = np.append(scores, [score])
         score_dist = [
             int((scores == i).sum())
@@ -333,28 +372,8 @@ def simulate_games(first_guess=None,
             patterns=list(map(int, patterns)),
             reductions=possibility_counts,
         ))
-        # Print outcome
-        if not quiet:
-            message = "\n".join([
-                "",
-                f"Score: {score}",
-                f"Answer: {answer}",
-                f"Guesses: {guesses}",
-                f"Reductions: {possibility_counts}",
-                *patterns_to_string((*patterns, 3**5 - 1)).split("\n"),
-                *" " * (6 - len(patterns)),
-                f"Distribution: {score_dist}",
-                f"Total guesses: {total_guesses}",
-                f"Average: {average}",
-                *" " * 2,
-            ])
-            if answer is not test_set[0]:
-                # Move cursor back up to the top of the message
-                n = len(message.split("\n")) + 1
-                print(("\033[F\033[K") * n)
-            else:
-                print("\r\033[K\n")
-            print(message)
+        # break
+        
 
     final_result = dict(
         score_distribution=score_dist,
@@ -363,29 +382,40 @@ def simulate_games(first_guess=None,
         game_results=game_results,
     )
 
-    # Save results
-    for obj, file in [(final_result, results_file), (next_guess_map, next_guess_map_file)]:
-        if file:
-            path = os.path.join(DATA_DIR, "simulation_results", file)
-            with open(path, 'w') as fp:
-                json.dump(obj, fp)
 
-    return final_result, next_guess_map
+    return final_result, next_guess_map, tracking_dict
 
 
 
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guess = "carse"
-    results, decision_map = simulate_games(
-        first_guess=first_guess,
-        priors=None,
-        look_two_ahead=True,
-        optimize_for_uniform_distribution=False,
-        # shuffle=True,
-        # brute_force_optimize=True,
-        hard_mode=True,
-    )
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    #first_guesses = ["salet"]
+
+    for first_guess in first_guesses:
+        print(first_guess)
+        results, decision_map, tracking_failure = simulate_games(
+            first_guess=first_guess,
+            priors=None,
+            look_two_ahead=False,
+            optimize_using_lower_bound=False,
+            rollout_begin_at=3,
+            rollout_top_k=10,
+            hard_mode=True,
+            test_mode=False,
+            track_failures=True,
+        )
+        print(results["score_distribution"], results["total_guesses"], results["average_score"])
+        # break
+
+        if tracking_failure is not None:
+            print("Failure case guesses: ")
+            print(tracking_failure)
+
+        # print("failure cases:")
+        # print(tracking_failure)
+
+
     print("--- %s seconds ---" % (time.time() - start_time))
 
