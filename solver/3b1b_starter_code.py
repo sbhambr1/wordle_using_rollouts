@@ -246,8 +246,8 @@ def simulate_games(first_guess=None,
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
 
-    if track_failures:
-        tracking_dict = {}
+    # if track_failures:
+    tracking_dict = {}
 
     if first_guess is None: 
         first_guess = optimal_guess(
@@ -391,8 +391,8 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    first_guesses = ["salet"]
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    # first_guesses = ["salet"]
 
     for first_guess in first_guesses:
         print(first_guess)
@@ -401,11 +401,11 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            rollout_begin_at=2,
-            rollout_top_k=200,
+            rollout_begin_at=3,
+            rollout_top_k=1000,
             hard_mode=True,
             test_mode=False,
-            track_failures=True,
+            track_failures=False,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
         # break
