@@ -258,7 +258,7 @@ def optimal_guess(allowed_words, possible_words, priors,
         )
     return allowed_words[np.argmin(expected_scores)]
 
-def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, display_progress=False): #n_top_picks=10 also takes a long time, use this for the end_game
+def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, display_progress=False, hard_mode=False): #n_top_picks=10 also takes a long time, use this for the end_game
     if len(possible_words) == 1: # If there's only one possible word, it's the answer
         return possible_words[0]
 
@@ -289,8 +289,12 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         iterable = top_choices
 
     for next_guess in iterable:
+        next_guess = 'round'
         scores = []
+        
         for answer in possible_words:
+            guesses = []
+            patterns = []
             score = 1
             possibilities = list(possible_words)
             guess = next_guess
@@ -299,11 +303,27 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                     guess, get_pattern(guess, answer),
                     possibilities,
                 )
+                if len(possibilities)==1:
+                    guess = answer
+                    continue
                 # Make recursive? If so, we'd want to keep track of
                 # the next_guess map and pass it down in the recursive
                 # subcalls
+                pattern = get_pattern(guess, answer)
+                guesses.append(guess)
+                patterns.append(pattern)
+                choices = prune_allowed_words(all_words, possibilities)
+
+                if hard_mode:
+                    for guess, pattern in zip(guesses, patterns):
+                        choices = get_possible_words(guess, pattern, choices)
+
+                if len(choices) == 0:
+                    score += 5
+                    continue
+
                 guess = optimal_guess(
-                    all_words, possibilities, priors,
+                    choices, possibilities, priors,
                     optimize_using_lower_bound=False,
                     purely_maximize_information=True
                 )
@@ -313,7 +333,8 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
         ## TODO: @Sid: think about whether taking the average here makes sense
         ## I would think that actually harms performance in the hard mode
-        true_average_scores.append(np.mean(scores)+1)
+        # true_average_scores.append(np.mean(scores)+1)
+        true_average_scores.append(np.sum(scores)+1)
 
     min_indices = np.where(true_average_scores == np.amin(true_average_scores))
     min_indices = min_indices[0]

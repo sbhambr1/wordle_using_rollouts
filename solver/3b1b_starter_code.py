@@ -307,6 +307,9 @@ def simulate_games(first_guess=None,
     game_results = []
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
+        
+        answer = 'pound'
+
         guesses = []
         patterns = []
         possibility_counts = []
@@ -339,7 +342,7 @@ def simulate_games(first_guess=None,
 
                 computed_guess = brute_force_optimal_guess(
                 choices, possibilities, priors,
-                n_top_picks=rollout_top_k)
+                n_top_picks=rollout_top_k, hard_mode=True)
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
@@ -372,7 +375,7 @@ def simulate_games(first_guess=None,
             patterns=list(map(int, patterns)),
             reductions=possibility_counts,
         ))
-        # break
+        break
         
 
     final_result = dict(
@@ -390,8 +393,8 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    #first_guesses = ["salet"]
+    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    first_guesses = ["salet"]
 
     for first_guess in first_guesses:
         print(first_guess)
@@ -400,8 +403,8 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            rollout_begin_at=3,
-            rollout_top_k=10,
+            rollout_begin_at=2,
+            rollout_top_k=200,
             hard_mode=True,
             test_mode=False,
             track_failures=True,
