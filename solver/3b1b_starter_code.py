@@ -308,8 +308,6 @@ def simulate_games(first_guess=None,
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         
-        answer = 'pound'
-
         guesses = []
         patterns = []
         possibility_counts = []
@@ -375,7 +373,7 @@ def simulate_games(first_guess=None,
             patterns=list(map(int, patterns)),
             reductions=possibility_counts,
         ))
-        break
+        
         
 
     final_result = dict(
