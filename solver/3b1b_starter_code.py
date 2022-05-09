@@ -391,8 +391,8 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    # first_guesses = ["salet"]
+    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    first_guesses = ["salet"]
 
     for first_guess in first_guesses:
         print(first_guess)
@@ -401,11 +401,11 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            rollout_begin_at=3,
-            rollout_top_k=1000,
+            rollout_begin_at=2,
+            rollout_top_k=10,
             hard_mode=True,
             test_mode=False,
-            track_failures=False,
+            track_failures=True,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
         # break

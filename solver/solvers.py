@@ -289,7 +289,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         iterable = top_choices
 
     for next_guess in iterable:
-        next_guess = 'round'
+        # next_guess = 'round'
         scores = []
         
         for answer in possible_words:
