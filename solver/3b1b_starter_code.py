@@ -402,7 +402,7 @@ if __name__ == "__main__":
             look_two_ahead=False,
             optimize_using_lower_bound=False,
             rollout_begin_at=2,
-            rollout_top_k=10,
+            rollout_top_k=200,
             hard_mode=True,
             test_mode=False,
             track_failures=True,
