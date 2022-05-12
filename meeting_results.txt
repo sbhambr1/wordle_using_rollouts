@@ -1,0 +1,6 @@
+salet
+shuffled
+[0, 99, 939, 1122, 139, 15, 1] 8295 3.5831533477321815
+Failure case guesses: 
+{'match': ['salet', 'parti', 'baton', 'catch', 'hatch', 'watch', 'match']}
+--- 25830.438280582428 seconds ---
