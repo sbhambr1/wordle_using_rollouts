@@ -274,7 +274,7 @@ def simulate_games(first_guess=None,
     # and reuse results that are seen multiple times in the sim
     next_guess_map = {}
 
-    def get_next_guess(guesses, patterns, possibilities):
+    def get_next_guess(guesses, patterns, possibilities, pattern):
         phash = "".join(
             str(g) + "".join(map(str, pattern_to_int_list(p)))
             for g, p in zip(guesses, patterns) 
@@ -294,7 +294,7 @@ def simulate_games(first_guess=None,
             guess=computed_guess
         else:
             computed_guess = optimal_guess(
-                choices, possibilities, priors,
+                choices, possibilities, priors, pattern,
                 look_two_ahead=look_two_ahead,
                 look_three_ahead=False,
                 purely_maximize_information=purely_maximize_information,
@@ -308,6 +308,7 @@ def simulate_games(first_guess=None,
     # and keep track of the stats.
     scores = np.zeros(0, dtype=int)
     game_results = []
+    mystery_list_lengths = []
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         
@@ -319,6 +320,7 @@ def simulate_games(first_guess=None,
         if exclude_seen_words:
             possibilities = list(filter(lambda w: w not in seen, possibilities))
         # answer = "bound" ##checking
+        possibility_counts.append(len(possibilities))
         score = 1
         guess = first_guess
         while guess != answer:
@@ -347,7 +349,7 @@ def simulate_games(first_guess=None,
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
-                computed_guess = get_next_guess(guesses, patterns, possibilities)
+                computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
                 guess=computed_guess
         guesses.append(guess)
 
@@ -369,25 +371,25 @@ def simulate_games(first_guess=None,
         average = scores.mean()
         seen.add(answer)
 
-        game_results.append(dict(
-            score=int(score),
-            answer=answer,
-            guesses=guesses,
-            patterns=list(map(int, patterns)),
-            reductions=possibility_counts,
-        ))
-        
-        
+        # game_results.append(dict(
+        #     score=int(score),
+        #     answer=answer,
+        #     guesses=guesses,
+        #     patterns=list(map(int, patterns)),
+        #     reductions=possibility_counts,
+        # ))
+
+        mystery_list_lengths.append(possibility_counts)
 
     final_result = dict(
         score_distribution=score_dist,
         total_guesses=int(total_guesses),
         average_score=float(scores.mean()),
-        game_results=game_results,
+        # game_results=game_results,
+        mystery_list_lengths=mystery_list_lengths,
     )
 
-
-    return final_result, next_guess_map, tracking_dict
+    return final_result, tracking_dict
 
 
 
@@ -399,45 +401,56 @@ if __name__ == "__main__":
     # first_guesses = ["salet"]
 
     # top 100 words found using max entropy heuristic for opening the game.
-    first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
+    first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
+                    'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
+                    'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
+                    'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 
+                    'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 
+                    'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 
+                    'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 
+                    'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 
+                    'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
+                    'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
+
+    # first_guesses = ['soare']
     
     score_distributions = []
     total_guesses = []
     average_scores = []
+    game_results = []
+    mystery_list_lengths = []
 
     for first_guess in first_guesses:
         print(first_guess)
-        results, decision_map, tracking_failure = simulate_games(
+        results, tracking_failure = simulate_games(
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
             purely_maximize_information=True,
             use_approximation_curve=False,
-            rollout_begin_at=100,
+            rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=False,
             test_mode=False,
             track_failures=False,
         )
-        print(results["score_distribution"], results["total_guesses"], results["average_score"])
+        # print(results["score_distribution"], results["total_guesses"], results["average_score"], results["mystery_list_lengths"])
         # break
 
         score_distributions.append(results["score_distribution"])
         total_guesses.append(results["total_guesses"])
         average_scores.append(results["average_score"])
+        # game_results.append(results["game_results"])
+        mystery_list_lengths.append(results["mystery_list_lengths"])
 
-        max_info_gain_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores)
-        max_info_gain_results_df = pd.DataFrame(max_info_gain_results_dict, columns=["score_distribution", "total_guesses", "average_score"])
-        max_info_gain_results_df.to_csv("max_info_gain_results.csv", index=False)
+        max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
+        max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
+        max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
 
-        if tracking_failure is not None:
-            print("Failure case guesses: ")
-            print(tracking_failure)
-
-        # print("failure cases:")
-        # print(tracking_failure)
-
+        # if tracking_failure is not None:
+        #     print("Failure case guesses: ")
+        #     print(tracking_failure)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 
