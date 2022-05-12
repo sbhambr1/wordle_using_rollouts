@@ -235,6 +235,7 @@ def simulate_games(first_guess=None,
                    shuffle=True,
                    hard_mode=False,
                    purely_maximize_information=False,
+                   use_approximation_curve=False,
                    brute_force_optimize=False,
                    rollout_begin_at=3,
                    rollout_top_k=10,
@@ -296,8 +297,9 @@ def simulate_games(first_guess=None,
                 choices, possibilities, priors,
                 look_two_ahead=look_two_ahead,
                 look_three_ahead=False,
-                purely_maximize_information=True,
-                optimize_using_lower_bound=optimize_using_lower_bound
+                purely_maximize_information=purely_maximize_information,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                use_approximation_curve=use_approximation_curve
             )
             guess=computed_guess
         return guess
@@ -341,7 +343,7 @@ def simulate_games(first_guess=None,
 
                 computed_guess = brute_force_optimal_guess(
                 choices, possibilities, priors,
-                n_top_picks=rollout_top_k, hard_mode=True)
+                n_top_picks=rollout_top_k, pattern=pattern, optimize_using_lower_bound=False, purely_maximize_information=False, use_approximation_curve=True, hard_mode=True)
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
@@ -410,6 +412,8 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
+            purely_maximize_information=True,
+            use_approximation_curve=False,
             rollout_begin_at=100,
             rollout_top_k=10,
             hard_mode=False,
