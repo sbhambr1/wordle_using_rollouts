@@ -12,6 +12,7 @@ import warnings
 
 import manimlib.utils as mu
 import numpy as np
+import pandas as pd
 from algorithms.entropy import *
 from algorithms.second_guesses import *
 from helper_functions.color_patterns import *
@@ -234,6 +235,7 @@ def simulate_games(first_guess=None,
                    shuffle=True,
                    hard_mode=False,
                    purely_maximize_information=False,
+                   use_approximation_curve=False,
                    brute_force_optimize=False,
                    rollout_begin_at=3,
                    rollout_top_k=10,
@@ -295,8 +297,9 @@ def simulate_games(first_guess=None,
                 choices, possibilities, priors,
                 look_two_ahead=look_two_ahead,
                 look_three_ahead=False,
-                purely_maximize_information=True,
-                optimize_using_lower_bound=optimize_using_lower_bound
+                purely_maximize_information=purely_maximize_information,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                use_approximation_curve=use_approximation_curve
             )
             guess=computed_guess
         return guess
@@ -340,7 +343,7 @@ def simulate_games(first_guess=None,
 
                 computed_guess = brute_force_optimal_guess(
                 choices, possibilities, priors,
-                n_top_picks=rollout_top_k, hard_mode=True)
+                n_top_picks=rollout_top_k, pattern=pattern, optimize_using_lower_bound=False, purely_maximize_information=False, use_approximation_curve=True, hard_mode=True)
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
@@ -391,8 +394,16 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
+    
     # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    first_guesses = ["salet"]
+    # first_guesses = ["salet"]
+
+    # top 100 words found using max entropy heuristic for opening the game.
+    first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
+    
+    score_distributions = []
+    total_guesses = []
+    average_scores = []
 
     for first_guess in first_guesses:
         print(first_guess)
@@ -401,14 +412,24 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            rollout_begin_at=2,
+            purely_maximize_information=True,
+            use_approximation_curve=False,
+            rollout_begin_at=100,
             rollout_top_k=10,
             hard_mode=False,
             test_mode=False,
-            track_failures=True,
+            track_failures=False,
         )
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
         # break
+
+        score_distributions.append(results["score_distribution"])
+        total_guesses.append(results["total_guesses"])
+        average_scores.append(results["average_score"])
+
+        max_info_gain_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores)
+        max_info_gain_results_df = pd.DataFrame(max_info_gain_results_dict, columns=["score_distribution", "total_guesses", "average_score"])
+        max_info_gain_results_df.to_csv("max_info_gain_results.csv", index=False)
 
         if tracking_failure is not None:
             print("Failure case guesses: ")

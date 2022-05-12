@@ -233,17 +233,39 @@ def get_entropy_scores(allowed_words, possible_words, priors):
     ents = get_entropies(allowed_words, possible_words, weights) # Entropies of each word
     return ents
 
-def optimal_guess(allowed_words, possible_words, priors,
+def get_expected_scores_using_approximation_curve(all_words, possible_words, pattern):
+    """
+    Return the scores for all possible guess words in all_words, using the approximation curve.
+    """
+    if len(possible_words) == 1:
+        return possible_words[0]
+    expected_scores = np.zeros(len(all_words))
+    for i, word in enumerate(all_words):
+        possibility_counts = len(get_possible_words(word, pattern, possible_words))
+        expected_scores[i] = (2.65 * (possibility_counts-1)) / 2314 + 1
+    return expected_scores
+
+def optimal_guess(allowed_words, possible_words, priors, pattern,
                   look_two_ahead=False,
                   look_three_ahead=False,
                   optimize_using_lower_bound=False,
                   purely_maximize_information=True,
+                  use_approximation_curve=False,
+                #   top_candidates=100,
                   ):
+
+    if use_approximation_curve:
+        expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
+        return allowed_words[np.argmin(expected_scores)]
+
     if purely_maximize_information: 
         if len(possible_words) == 1: # If there's only one possible word, it's the answer
             return possible_words[0] 
         weights = get_weights(possible_words, priors) # Get the weights
         ents = get_entropies(allowed_words, possible_words, weights) # Entropies of each word
+        # indices = np.argsort(ents)[::-1] # Sort the words by entropy
+        # return top 100 candidates
+        # return np.array(allowed_words)[indices[:top_candidates]]
         return allowed_words[np.argmax(ents)]
 
     # Just experimenting here...
@@ -258,7 +280,7 @@ def optimal_guess(allowed_words, possible_words, priors,
         )
     return allowed_words[np.argmin(expected_scores)]
 
-def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, display_progress=False, hard_mode=False): #n_top_picks=10 also takes a long time, use this for the end_game
+def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, pattern=None, optimize_using_lower_bound=False, purely_maximize_information=False, use_approximation_curve=False, display_progress=False, hard_mode=False): #n_top_picks=10 also takes a long time, use this for the end_game
     if len(possible_words) == 1: # If there's only one possible word, it's the answer
         return possible_words[0]
 
@@ -268,15 +290,26 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     # expected_scores = get_score_lower_bounds(all_words, possible_words)
 
-    expected_scores = get_entropy_scores(all_words, possible_words, priors) # for max info gain
-    top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
-    top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] #for max info gain
+    # For max information gain heursitic only:
+
+    expected_scores = get_entropy_scores(all_words, possible_words, priors) 
+    top_choices = [all_words[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] 
+    # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[::-1][:n_top_picks]] 
 
     ## TODO: @Sid: shuffle elements of top choices that have same entropy. 
 
-    # expected_scores = get_expected_scores(all_words, possible_words, priors) # for min expected score
-    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] #for min expected score
-    # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[:n_top_picks]] #for min expected score
+    # for expected scores from Grant's formula:
+
+    # expected_scores = get_expected_scores(all_words, possible_words, priors) 
+    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
+    # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
+
+    # for expected scores from approximation curve:
+
+    # expected_scores = get_expected_scores_using_approximation_curve(all_words, possible_words, pattern) 
+    # TODO: @Sid: shuffle elements of top choices that have same expected score.
+    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
+
 
     true_average_scores = []
     if display_progress:
@@ -323,9 +356,10 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                     continue
 
                 guess = optimal_guess(
-                    choices, possibilities, priors,
-                    optimize_using_lower_bound=False,
-                    purely_maximize_information=True
+                    choices, possibilities, priors, pattern,
+                    optimize_using_lower_bound=optimize_using_lower_bound,
+                    purely_maximize_information=purely_maximize_information,
+                    use_approximation_curve=use_approximation_curve,
                 )
                 score += 1
             scores.append(score)
@@ -362,7 +396,9 @@ if __name__ == "__main__":
     # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=True, purely_maximize_information=False) # returs 'Trace' with both types of priors
     # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, optimize_using_lower_bound=True, purely_maximize_information=True) # returns 'Soare' with both types of priors
 
-    result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, look_three_ahead=False ,optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
+    # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=True, look_three_ahead=False ,optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
     # result = optimal_guess(all_words, wordle_answers, priors, look_two_ahead=False, look_three_ahead=True ,optimize_using_lower_bound=False, purely_maximize_information=False) # returns 'slate' and 'trace' with both types of priors
     
+    result = optimal_guess(all_words, wordle_answers, priors, purely_maximize_information=True)
+
     print(result)
