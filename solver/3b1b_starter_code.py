@@ -412,7 +412,7 @@ if __name__ == "__main__":
                     'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
                     'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
 
-    # first_guesses = ['soare']
+    first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
     
     score_distributions = []
     total_guesses = []
