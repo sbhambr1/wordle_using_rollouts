@@ -413,6 +413,8 @@ if __name__ == "__main__":
                     'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
 
     first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
+
+    first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
     
     score_distributions = []
     total_guesses = []
@@ -431,22 +433,22 @@ if __name__ == "__main__":
             use_approximation_curve=False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
-            track_failures=False,
+            track_failures=True,
         )
-        # print(results["score_distribution"], results["total_guesses"], results["average_score"], results["mystery_list_lengths"])
+        print(results["score_distribution"], results["total_guesses"], results["average_score"])
         # break
 
-        score_distributions.append(results["score_distribution"])
-        total_guesses.append(results["total_guesses"])
-        average_scores.append(results["average_score"])
-        # game_results.append(results["game_results"])
-        mystery_list_lengths.append(results["mystery_list_lengths"])
+        # score_distributions.append(results["score_distribution"])
+        # total_guesses.append(results["total_guesses"])
+        # average_scores.append(results["average_score"])
+        # # game_results.append(results["game_results"])
+        # mystery_list_lengths.append(results["mystery_list_lengths"])
 
-        max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
-        max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
-        max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
+        # max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
+        # max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
+        # max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
 
         # if tracking_failure is not None:
         #     print("Failure case guesses: ")
