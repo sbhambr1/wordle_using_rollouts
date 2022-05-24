@@ -12,6 +12,13 @@ import multiprocessing
 
 warnings.filterwarnings("ignore")
 
+DATA_DIR = os.path.join(
+    os.path.dirname(os.path.realpath("__init__.py")),
+    "data",
+)
+
+APPROXIMATION_CURVE_FILE = os.path.join(DATA_DIR, "approximation_curve_data.npy")
+
 # Solvers
 
 def get_guess_values_array(allowed_words, possible_words, priors, look_two_ahead=False):
@@ -237,12 +244,18 @@ def get_expected_scores_using_approximation_curve(all_words, possible_words, pat
     """
     Return the scores for all possible guess words in all_words, using the approximation curve.
     """
-    if len(possible_words) == 1:
-        return possible_words[0]
+    curve = np.load(APPROXIMATION_CURVE_FILE)
     expected_scores = np.zeros(len(all_words))
     for i, word in enumerate(all_words):
         possibility_counts = len(get_possible_words(word, pattern, possible_words))
-        expected_scores[i] = (2.65 * (possibility_counts-1)) / 2314 + 1
+        if possibility_counts == 0:
+            expected_scores[i] = np.float('inf')
+        elif possibility_counts == 1:
+            expected_scores[i] = 1
+        elif possibility_counts == 2:
+            expected_scores[i] = 1.5
+        else:
+            expected_scores[i] = np.interp(possibility_counts, curve[:, 0], curve[:, 1])
     return expected_scores
 
 def optimal_guess(allowed_words, possible_words, priors, pattern,
@@ -255,6 +268,8 @@ def optimal_guess(allowed_words, possible_words, priors, pattern,
                   ):
 
     if use_approximation_curve:
+        if len(possible_words) == 1:
+            return possible_words[0]
         expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
         return allowed_words[np.argmin(expected_scores)]
 

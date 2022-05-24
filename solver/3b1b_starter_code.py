@@ -430,10 +430,10 @@ if __name__ == "__main__":
             look_two_ahead=False,
             optimize_using_lower_bound=False,
             purely_maximize_information=True,
-            use_approximation_curve=False,
-            rollout_begin_at=2,
+            use_approximation_curve=True,
+            rollout_begin_at=100,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
         )
