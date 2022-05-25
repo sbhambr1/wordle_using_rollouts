@@ -415,7 +415,7 @@ if __name__ == "__main__":
     first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
 
     first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
-    
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
     score_distributions = []
     total_guesses = []
     average_scores = []
@@ -433,7 +433,7 @@ if __name__ == "__main__":
             use_approximation_curve=True,
             rollout_begin_at=100,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
         )
