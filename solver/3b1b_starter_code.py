@@ -431,7 +431,7 @@ if __name__ == "__main__":
             optimize_using_lower_bound=False,
             purely_maximize_information=True,
             use_approximation_curve=True,
-            rollout_begin_at=100,
+            rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=False,
             test_mode=False,
