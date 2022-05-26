@@ -433,7 +433,7 @@ if __name__ == "__main__":
             use_approximation_curve=True,
             rollout_begin_at=100,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
         )
