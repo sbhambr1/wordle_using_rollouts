@@ -42,7 +42,6 @@ def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words): 
     p = (1 / len(possible_words)) * (first_guess in possible_words) 
     return p + (1 - p) * (1 + min_score)
 
-
 def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): # not being used right now, but seems like a utility function for additional analysis
     # Run find_best_two_step_entropy first
     file = os.path.join(mu.directories.get_directories()["data"], "wordle", "best_double_entropies.json")
@@ -79,7 +78,6 @@ def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): #
 
     return result
 
-
 def find_best_two_step_entropy(): # not being used right now, but seems like a utility function for additional analysis
     words = get_word_list()
     answers = get_word_list(short=True)
@@ -111,7 +109,6 @@ def find_best_two_step_entropy(): # not being used right now, but seems like a u
         json.dump(double_ents, fp)
 
     return double_ents
-
 
 def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right now, but seems like a utility function for additional analysis
     all_words = get_word_list()
@@ -152,7 +149,6 @@ def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right 
         ))
     return result
 
-
 def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False): # not being used right now, but finds answer in a different way probably?
     with open(SECOND_GUESS_MAP_FILE) as fp:
         all_sgms = json.load(fp)
@@ -188,7 +184,6 @@ def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False):
 
     return sgm
 
-
 def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being used right now, but finds answer in a different way
     words = get_word_list()
     answers = get_word_list(short=True)
@@ -223,7 +218,6 @@ def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being 
         json.dump(ent_score_pairs, fp)
 
     return ent_score_pairs
-
 
 def simulate_games(first_guess=None,
                    priors=None,
@@ -391,9 +385,6 @@ def simulate_games(first_guess=None,
 
     return final_result, tracking_dict
 
-
-
-
 if __name__ == "__main__":
     start_time = time.time()
     
@@ -401,20 +392,21 @@ if __name__ == "__main__":
     # first_guesses = ["salet"]
 
     # top 100 words found using max entropy heuristic for opening the game.
-    first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
-                    'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
-                    'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
-                    'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 
-                    'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 
-                    'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 
-                    'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 
-                    'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 
-                    'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
-                    'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
+    # first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
+    #                 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
+    #                 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
+    #                 'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 
+    #                 'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 
+    #                 'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 
+    #                 'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 
+    #                 'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 
+    #                 'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
+    #                 'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
 
-    first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
+    # first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
 
-    first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
+    # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
+
     first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
     score_distributions = []
     total_guesses = []
@@ -433,7 +425,7 @@ if __name__ == "__main__":
             use_approximation_curve=True,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
         )
