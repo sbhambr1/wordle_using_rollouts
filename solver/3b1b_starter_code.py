@@ -407,7 +407,7 @@ if __name__ == "__main__":
 
     # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
 
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
     score_distributions = []
     total_guesses = []
     average_scores = []
@@ -421,8 +421,8 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            purely_maximize_information=True,
-            use_approximation_curve=True,
+            purely_maximize_information=False,
+            use_approximation_curve=False,
             rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=True,

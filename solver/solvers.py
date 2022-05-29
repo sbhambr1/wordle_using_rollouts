@@ -315,15 +315,15 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     # for expected scores from Grant's formula:
 
-    # expected_scores = get_expected_scores(all_words, possible_words, priors) 
-    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
+    expected_scores = get_expected_scores(all_words, possible_words, priors) 
+    top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
     # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
 
     # for expected scores from approximation curve:
 
-    expected_scores = get_expected_scores_using_approximation_curve(all_words, possible_words, pattern) 
-    # TODO: @Sid: shuffle elements of top choices that have same expected score.
-    top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
+    # expected_scores = get_expected_scores_using_approximation_curve(all_words, possible_words, pattern) 
+    # # TODO: @Sid: shuffle elements of top choices that have same expected score.
+    # top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
 
 
     true_average_scores = []
