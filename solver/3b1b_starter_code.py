@@ -339,7 +339,13 @@ def simulate_games(first_guess=None,
 
                 computed_guess = brute_force_optimal_guess(
                 choices, possibilities, priors,
-                n_top_picks=rollout_top_k, pattern=pattern, optimize_using_lower_bound=False, purely_maximize_information=False, use_approximation_curve=True, hard_mode=True)
+                n_top_picks=rollout_top_k, 
+                pattern=pattern,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                purely_maximize_information=purely_maximize_information,
+                use_approximation_curve=use_approximation_curve,
+                hard_mode=hard_mode)
+
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
