@@ -411,9 +411,9 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     for next_guess in iterable:
 
-        max_info_scores = [] if purely_maximize_information or super_heuristic else None
-        min_expected_scores = [] if expected_scores_heuristic or super_heuristic else None 
-        total_approx_curve_score = [] if use_approximation_curve else None
+        max_info_scores = []
+        min_expected_scores = [] 
+        total_approx_curve_score = []
         
         for answer in possible_words:
             guesses = []
@@ -444,13 +444,14 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         total_min_expected_score.append(np.sum(min_expected_scores)+1) if expected_scores_heuristic or super_heuristic else None
         total_approx_curve_score.append(np.sum(total_approx_curve_score)+1)  if use_approximation_curve else None
 
-    max_info_score_indices = np.where(total_max_info_score == np.amin(total_max_info_score))[0]
-    min_expected_score_indices = np.where(total_min_expected_score == np.amin(total_min_expected_score))[0]
-    approx_curve_score_indices = np.where(total_approx_curve_score == np.amin(total_approx_curve_score))[0]
-    if np.amin(total_max_info_score) < np.amin(total_min_expected_score):
-        super_heuristic_indices = max_info_score_indices
-    else:
-        super_heuristic_indices = min_expected_score_indices
+    max_info_score_indices = np.where(total_max_info_score == np.amin(total_max_info_score))[0] if purely_maximize_information or super_heuristic else None
+    min_expected_score_indices = np.where(total_min_expected_score == np.amin(total_min_expected_score))[0] if expected_scores_heuristic or super_heuristic else None
+    approx_curve_score_indices = np.where(total_approx_curve_score == np.amin(total_approx_curve_score))[0] if use_approximation_curve else None
+    if super_heuristic:
+        if np.amin(total_max_info_score) < np.amin(total_min_expected_score):
+            super_heuristic_indices = max_info_score_indices
+        else:
+            super_heuristic_indices = min_expected_score_indices
 
     ## TODO: @AB: try ascending order instead of the default descending alphabetical order. I expect performance to improve.
 

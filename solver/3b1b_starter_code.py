@@ -4,6 +4,8 @@ import logging as log
 import os
 import sys
 
+from cv2 import exp
+
 sys.path.append(".")
 #sys.path.append(os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'color_patterns')))
 import random
@@ -226,11 +228,12 @@ def simulate_games(first_guess=None,
                    second_guess_map=None,
                    exclude_seen_words=False,
                    test_set=None,
-                   shuffle=True,
+                   shuffle=False,
                    hard_mode=False,
                    super_heuristic=False,
                    purely_maximize_information=False,
                    use_approximation_curve=False,
+                   expected_scores_heuristic = False,
                    brute_force_optimize=False,
                    rollout_begin_at=3,
                    rollout_top_k=10,
@@ -346,6 +349,7 @@ def simulate_games(first_guess=None,
                 optimize_using_lower_bound=optimize_using_lower_bound,
                 purely_maximize_information=purely_maximize_information,
                 use_approximation_curve=use_approximation_curve,
+                expected_scores_heuristic=expected_scores_heuristic,
                 hard_mode=hard_mode)
 
                 guess=computed_guess
@@ -429,9 +433,9 @@ if __name__ == "__main__":
             priors=None,
             look_two_ahead=False,
             super_heuristic=True,
-            optimize_using_lower_bound=False,
             purely_maximize_information=False,
             use_approximation_curve=False,
+            expected_scores_heuristic =False,
             rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=True,
