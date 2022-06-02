@@ -228,6 +228,7 @@ def simulate_games(first_guess=None,
                    test_set=None,
                    shuffle=True,
                    hard_mode=False,
+                   super_heuristic=False,
                    purely_maximize_information=False,
                    use_approximation_curve=False,
                    brute_force_optimize=False,
@@ -341,6 +342,7 @@ def simulate_games(first_guess=None,
                 choices, possibilities, priors,
                 n_top_picks=rollout_top_k, 
                 pattern=pattern,
+                super_heuristic=super_heuristic,
                 optimize_using_lower_bound=optimize_using_lower_bound,
                 purely_maximize_information=purely_maximize_information,
                 use_approximation_curve=use_approximation_curve,
@@ -398,6 +400,7 @@ if __name__ == "__main__":
     # first_guesses = ["salet"]
 
     # top 100 words found using max entropy heuristic for opening the game.
+
     # first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
     #                 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
     #                 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
@@ -414,18 +417,18 @@ if __name__ == "__main__":
     # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
 
     first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
-    score_distributions = []
-    total_guesses = []
-    average_scores = []
-    game_results = []
-    mystery_list_lengths = []
+
+    saving_results_to_csv = False
 
     for first_guess in first_guesses:
+
         print(first_guess)
+        
         results, tracking_failure = simulate_games(
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
+            super_heuristic=True,
             optimize_using_lower_bound=False,
             purely_maximize_information=False,
             use_approximation_curve=False,
@@ -435,22 +438,30 @@ if __name__ == "__main__":
             test_mode=False,
             track_failures=True,
         )
+        
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
-        # break
 
-        # score_distributions.append(results["score_distribution"])
-        # total_guesses.append(results["total_guesses"])
-        # average_scores.append(results["average_score"])
-        # # game_results.append(results["game_results"])
-        # mystery_list_lengths.append(results["mystery_list_lengths"])
+        if saving_results_to_csv:
 
-        # max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
-        # max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
-        # max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
+            score_distributions = []
+            total_guesses = []
+            average_scores = []
+            game_results = []
+            mystery_list_lengths = []
 
-        # if tracking_failure is not None:
-        #     print("Failure case guesses: ")
-        #     print(tracking_failure)
+            score_distributions.append(results["score_distribution"])
+            total_guesses.append(results["total_guesses"])
+            average_scores.append(results["average_score"])
+            mystery_list_lengths.append(results["mystery_list_lengths"])
+
+            max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
+            max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
+            max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
+
+        if tracking_failure is not None:
+
+            print("Failure case guesses: ")
+            print(tracking_failure)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 

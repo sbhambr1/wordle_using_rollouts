@@ -306,11 +306,51 @@ def min_expected_score_guess(allowed_words, possible_words, priors):
     expected_scores = get_expected_scores(allowed_words, possible_words, priors)
     return allowed_words[np.argmin(expected_scores)]
 
-def approx_curve_guess(allowed_words, possible_words, priors, pattern):
+def approx_curve_guess(allowed_words, possible_words, pattern):
     if len(possible_words) == 1:
             return possible_words[0]
     expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
     return allowed_words[np.argmin(expected_scores)]
+
+def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
+
+    score = 1
+
+    while guess != answer:
+
+        possibilities = get_possible_words(guess, get_pattern(guess, answer), possibilities)
+
+        if len(possibilities)==1:
+            guess = answer
+            continue
+
+        pattern = get_pattern(guess, answer)
+        guesses.append(guess)
+        patterns.append(pattern)
+        choices = prune_allowed_words(all_words, possibilities)
+
+        if hard_mode:
+            for guess, pattern in zip(guesses, patterns):
+                choices = get_possible_words(guess, pattern, choices)
+
+        if super_heuristic:
+            if purely_maximize_information:
+                guess = max_info_gain_guess(allowed_words = choices, possible_words = possibilities, priors = priors)
+            elif expected_scores_heuristic:
+                guess = min_expected_score_guess(allowed_words = choices, possible_words = possibilities, priors = priors)
+        else:
+            if purely_maximize_information:
+                guess = max_info_gain_guess(allowed_words = choices, possible_words = possibilities, priors = priors)
+
+            if expected_scores_heuristic:
+                guess = min_expected_score_guess(allowed_words = choices, possible_words = possibilities, priors = priors)
+
+            if use_approximation_curve:
+                guess = approx_curve_guess(allowed_words = choices, possible_words = possibilities, pattern = pattern)
+
+        score += 1
+
+    return score
 
 def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10, pattern=None, 
                             super_heuristic = False,
@@ -320,14 +360,10 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
                             expected_scores_heuristic = False,
                             display_progress=False, 
                             hard_mode=False): #n_top_picks=10 also takes a long time, use this for the end_game
+    
+    
     if len(possible_words) == 1: # If there's only one possible word, it's the answer
         return possible_words[0]
-
-    # For the suggestions with the top expected scores, just
-    # actually play the game out from this point to see what
-    # their actual scores are, and minimize.
-
-    # expected_scores = get_score_lower_bounds(all_words, possible_words)
 
     # For max information gain heursitic only:
 
@@ -339,7 +375,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     ## TODO: @Sid: shuffle elements of top choices that have same entropy. 
 
-    # for expected scores from Grant's formula:
+    # For expected scores from Grant's formula - IMPORTANT - Our initialization of top k words is different than his:
 
     if expected_scores_heuristic:
         expected_scores = get_expected_scores(all_words, possible_words, priors) 
@@ -374,70 +410,47 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         iterable = top_choices
 
     for next_guess in iterable:
-        # next_guess = 'round'
+
         max_info_scores = [] if purely_maximize_information or super_heuristic else None
         min_expected_scores = [] if expected_scores_heuristic or super_heuristic else None 
-        min_approx_curve_scores = [] if use_approximation_curve else None
+        total_approx_curve_score = [] if use_approximation_curve else None
         
         for answer in possible_words:
             guesses = []
             patterns = []
 
-            info_score = 1 if purely_maximize_information or super_heuristic else None # scoring according to maximizing information gain heuristic
-            expected_score = 1 if expected_scores_heuristic or super_heuristic else None # scoring according to Grant's formula
-            approx_curve_score = 1 if use_approximation_curve else None # scoring according to approximation curve
-
-            info_flag = False # flag for whether or not to use info_score
-            expected_flag = False # flag for whether or not to use expected_score
-            
             possibilities = list(possible_words)
             guess = next_guess
-            while info_guess != answer and expected_guess != answer:
-                possibilities = get_possible_words(
-                    guess, get_pattern(guess, answer),
-                    possibilities,
-                )
-                if len(possibilities)==1:
-                    guess = answer
-                    continue
-                # Make recursive? If so, we'd want to keep track of
-                # the next_guess map and pass it down in the recursive
-                # subcalls
-                pattern = get_pattern(guess, answer)
-                guesses.append(guess)
-                patterns.append(pattern)
-                choices = prune_allowed_words(all_words, possibilities)
 
-                if hard_mode:
-                    for guess, pattern in zip(guesses, patterns):
-                        choices = get_possible_words(guess, pattern, choices)
+            if purely_maximize_information:
+                info_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=purely_maximize_information, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False)
+                max_info_scores.append(info_score)
 
-                if purely_maximize_information or super_heuristic:
-                    info_guess = max_info_gain_guess(choices, possibilities, priors)
+            if expected_scores_heuristic:
+                expected_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=False, expected_scores_heuristic=expected_scores_heuristic, super_heuristic=False, use_approximation_curve=False)
+                min_expected_scores.append(expected_score)
 
-                if expected_scores_heuristic or super_heuristic:
-                    expected_guess = min_expected_score_guess(choices, possibilities, priors)
+            if use_approximation_curve:
+                approx_curve_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=use_approximation_curve)
+                total_approx_curve_score.append(approx_curve_score)
 
-                if use_approximation_curve:
-                    approx_curve_guess = approx_curve_guess(choices, possibilities, priors, pattern)
+            if super_heuristic:
+                info_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=True, expected_scores_heuristic=False, super_heuristic=super_heuristic, use_approximation_curve=False)
+                max_info_scores.append(info_score)
+                expected_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=False, expected_scores_heuristic=True, super_heuristic=super_heuristic, use_approximation_curve=False)
+                min_expected_scores.append(expected_score)
 
-                info_score += 1 if info_score is not None else 0
-                expected_score += 1 if expected_score is not None else 0
-                approx_curve_score += 1 if approx_curve_score is not None else 0
-
-            max_info_scores.append(info_score)
-            min_expected_scores.append(expected_score)
-            min_approx_curve_scores.append(approx_curve_score)
-
-        # true_average_scores.append(np.mean(scores)+1-top_entropies[i])
-
-        total_max_info_score.append(np.sum(max_info_scores)+1)
-        total_min_expected_score.append(np.sum(min_expected_scores)+1)
-        total_approx_curve_score.append(np.sum(min_approx_curve_scores)+1)
+        total_max_info_score.append(np.sum(max_info_scores)+1) if purely_maximize_information or super_heuristic else None
+        total_min_expected_score.append(np.sum(min_expected_scores)+1) if expected_scores_heuristic or super_heuristic else None
+        total_approx_curve_score.append(np.sum(total_approx_curve_score)+1)  if use_approximation_curve else None
 
     max_info_score_indices = np.where(total_max_info_score == np.amin(total_max_info_score))[0]
     min_expected_score_indices = np.where(total_min_expected_score == np.amin(total_min_expected_score))[0]
-    min_approx_curve_score_indices = np.where(total_approx_curve_score == np.amin(total_approx_curve_score))[0]
+    approx_curve_score_indices = np.where(total_approx_curve_score == np.amin(total_approx_curve_score))[0]
+    if np.amin(total_max_info_score) < np.amin(total_min_expected_score):
+        super_heuristic_indices = max_info_score_indices
+    else:
+        super_heuristic_indices = min_expected_score_indices
 
     ## TODO: @AB: try ascending order instead of the default descending alphabetical order. I expect performance to improve.
 
@@ -446,10 +459,9 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
     elif expected_scores_heuristic:
         return top_choices[random.choice(min_expected_score_indices)]
     elif use_approximation_curve:
-        return top_choices[random.choice(min_approx_curve_score_indices)]
+        return top_choices[random.choice(approx_curve_score_indices)]
     else: # superheuristic case
-        print('Superheuristic case Not Implemented!')
-        pass
+        return top_choices[random.choice(super_heuristic_indices)]
 
 if __name__ == "__main__":
 
