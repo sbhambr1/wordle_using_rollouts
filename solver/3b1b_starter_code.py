@@ -12,6 +12,7 @@ import warnings
 
 import manimlib.utils as mu
 import numpy as np
+import pandas as pd
 from algorithms.entropy import *
 from algorithms.second_guesses import *
 from helper_functions.color_patterns import *
@@ -40,7 +41,6 @@ def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words): 
         min_score += (len(bucket) / N) * lower_bounds.min()
     p = (1 / len(possible_words)) * (first_guess in possible_words) 
     return p + (1 - p) * (1 + min_score)
-
 
 def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): # not being used right now, but seems like a utility function for additional analysis
     # Run find_best_two_step_entropy first
@@ -78,7 +78,6 @@ def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): #
 
     return result
 
-
 def find_best_two_step_entropy(): # not being used right now, but seems like a utility function for additional analysis
     words = get_word_list()
     answers = get_word_list(short=True)
@@ -110,7 +109,6 @@ def find_best_two_step_entropy(): # not being used right now, but seems like a u
         json.dump(double_ents, fp)
 
     return double_ents
-
 
 def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right now, but seems like a utility function for additional analysis
     all_words = get_word_list()
@@ -151,7 +149,6 @@ def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right 
         ))
     return result
 
-
 def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False): # not being used right now, but finds answer in a different way probably?
     with open(SECOND_GUESS_MAP_FILE) as fp:
         all_sgms = json.load(fp)
@@ -186,7 +183,6 @@ def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False):
         json.dump(all_sgms, fp)
 
     return sgm
-
 
 def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being used right now, but finds answer in a different way
     words = get_word_list()
@@ -223,7 +219,6 @@ def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being 
 
     return ent_score_pairs
 
-
 def simulate_games(first_guess=None,
                    priors=None,
                    look_two_ahead=False,
@@ -234,6 +229,7 @@ def simulate_games(first_guess=None,
                    shuffle=True,
                    hard_mode=False,
                    purely_maximize_information=False,
+                   use_approximation_curve=False,
                    brute_force_optimize=False,
                    rollout_begin_at=3,
                    rollout_top_k=10,
@@ -246,8 +242,8 @@ def simulate_games(first_guess=None,
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
 
-    if track_failures:
-        tracking_dict = {}
+    # if track_failures:
+    tracking_dict = {}
 
     if first_guess is None: 
         first_guess = optimal_guess(
@@ -272,7 +268,7 @@ def simulate_games(first_guess=None,
     # and reuse results that are seen multiple times in the sim
     next_guess_map = {}
 
-    def get_next_guess(guesses, patterns, possibilities):
+    def get_next_guess(guesses, patterns, possibilities, pattern):
         phash = "".join(
             str(g) + "".join(map(str, pattern_to_int_list(p)))
             for g, p in zip(guesses, patterns) 
@@ -292,11 +288,12 @@ def simulate_games(first_guess=None,
             guess=computed_guess
         else:
             computed_guess = optimal_guess(
-                choices, possibilities, priors,
+                choices, possibilities, priors, pattern,
                 look_two_ahead=look_two_ahead,
                 look_three_ahead=False,
-                purely_maximize_information=True,
-                optimize_using_lower_bound=optimize_using_lower_bound
+                purely_maximize_information=purely_maximize_information,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                use_approximation_curve=use_approximation_curve
             )
             guess=computed_guess
         return guess
@@ -305,8 +302,10 @@ def simulate_games(first_guess=None,
     # and keep track of the stats.
     scores = np.zeros(0, dtype=int)
     game_results = []
+    mystery_list_lengths = []
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
+        
         guesses = []
         patterns = []
         possibility_counts = []
@@ -315,6 +314,7 @@ def simulate_games(first_guess=None,
         if exclude_seen_words:
             possibilities = list(filter(lambda w: w not in seen, possibilities))
         # answer = "bound" ##checking
+        possibility_counts.append(len(possibilities))
         score = 1
         guess = first_guess
         while guess != answer:
@@ -339,11 +339,17 @@ def simulate_games(first_guess=None,
 
                 computed_guess = brute_force_optimal_guess(
                 choices, possibilities, priors,
-                n_top_picks=rollout_top_k)
+                n_top_picks=rollout_top_k, 
+                pattern=pattern,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                purely_maximize_information=purely_maximize_information,
+                use_approximation_curve=use_approximation_curve,
+                hard_mode=hard_mode)
+
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
-                computed_guess = get_next_guess(guesses, patterns, possibilities)
+                computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
                 guess=computed_guess
         guesses.append(guess)
 
@@ -365,42 +371,65 @@ def simulate_games(first_guess=None,
         average = scores.mean()
         seen.add(answer)
 
-        game_results.append(dict(
-            score=int(score),
-            answer=answer,
-            guesses=guesses,
-            patterns=list(map(int, patterns)),
-            reductions=possibility_counts,
-        ))
-        # break
-        
+        # game_results.append(dict(
+        #     score=int(score),
+        #     answer=answer,
+        #     guesses=guesses,
+        #     patterns=list(map(int, patterns)),
+        #     reductions=possibility_counts,
+        # ))
+
+        mystery_list_lengths.append(possibility_counts)
 
     final_result = dict(
         score_distribution=score_dist,
         total_guesses=int(total_guesses),
         average_score=float(scores.mean()),
-        game_results=game_results,
+        # game_results=game_results,
+        mystery_list_lengths=mystery_list_lengths,
     )
 
-
-    return final_result, next_guess_map, tracking_dict
-
-
-
+    return final_result, tracking_dict
 
 if __name__ == "__main__":
     start_time = time.time()
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    #first_guesses = ["salet"]
+    
+    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
+    # first_guesses = ["salet"]
+
+    # top 100 words found using max entropy heuristic for opening the game.
+    # first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
+    #                 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
+    #                 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
+    #                 'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 
+    #                 'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 
+    #                 'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 
+    #                 'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 
+    #                 'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 
+    #                 'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
+    #                 'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
+
+    # first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
+
+    # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
+
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
+    score_distributions = []
+    total_guesses = []
+    average_scores = []
+    game_results = []
+    mystery_list_lengths = []
 
     for first_guess in first_guesses:
         print(first_guess)
-        results, decision_map, tracking_failure = simulate_games(
+        results, tracking_failure = simulate_games(
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
             optimize_using_lower_bound=False,
-            rollout_begin_at=3,
+            purely_maximize_information=False,
+            use_approximation_curve=False,
+            rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=True,
             test_mode=False,
@@ -409,13 +438,19 @@ if __name__ == "__main__":
         print(results["score_distribution"], results["total_guesses"], results["average_score"])
         # break
 
-        if tracking_failure is not None:
-            print("Failure case guesses: ")
-            print(tracking_failure)
+        # score_distributions.append(results["score_distribution"])
+        # total_guesses.append(results["total_guesses"])
+        # average_scores.append(results["average_score"])
+        # # game_results.append(results["game_results"])
+        # mystery_list_lengths.append(results["mystery_list_lengths"])
 
-        # print("failure cases:")
-        # print(tracking_failure)
+        # max_info_gain_rollout_results_dict =  dict(score_distribution=score_distributions, total_guesses=total_guesses, average_score=average_scores, mystery_list_lengths=mystery_list_lengths)
+        # max_info_gain_rollout_results_df = pd.DataFrame(max_info_gain_rollout_results_dict, columns=["score_distribution", "total_guesses", "average_score", "mystery_list_lengths"])
+        # max_info_gain_rollout_results_df.to_csv("max_info_gain_rollout_results.csv", index=False)
 
+        # if tracking_failure is not None:
+        #     print("Failure case guesses: ")
+        #     print(tracking_failure)
 
     print("--- %s seconds ---" % (time.time() - start_time))
 

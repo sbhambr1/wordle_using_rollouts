@@ -1,0 +1,36 @@
+salet
+shuffled
+[0, 98, 837, 833, 320, 144, 57, 17, 6, 1, 2] 9124 3.9412526997840174                                                                                                                                                                
+Failure case guesses: 
+{}
+soare
+shuffled
+[0, 59, 847, 752, 384, 153, 77, 27, 12, 3, 1] 9409 4.064362850971922                                                                                                                                                                
+Failure case guesses: 
+{}
+trace
+shuffled
+[1, 97, 861, 738, 360, 161, 59, 24, 8, 5, 1] 9234 3.988768898488121                                                                                                                                                                 
+Failure case guesses: 
+{}
+slate
+shuffled
+[1, 84, 838, 773, 361, 157, 63, 28, 6, 3, 0, 1] 9283 4.009935205183585                                                                                                                                                              
+Failure case guesses: 
+{}
+crane
+shuffled
+[1, 82, 853, 813, 332, 144, 58, 25, 6, 1] 9170 3.961123110151188                                                                                                                                                                    
+Failure case guesses: 
+{}
+dealt
+shuffled
+[1, 74, 825, 811, 395, 133, 53, 9, 8, 6] 9216 3.9809935205183584                                                                                                                                                                    
+Failure case guesses: 
+{}
+carse
+shuffled
+[0, 90, 800, 821, 403, 136, 43, 13, 7, 2] 9183 3.9667386609071276                                                                                                                                                                   
+Failure case guesses: 
+{}
+--- 1178.1021738052368 seconds ---
