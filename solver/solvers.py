@@ -399,7 +399,11 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
         total_approx_curve_score = []
 
-    
+    total_max_info_score = []
+    total_min_expected_score = [] 
+    total_approx_curve_score = []
+    total_super_heuristic_score = []
+
     if display_progress:
         iterable = ProgressDisplay(
             top_choices,
@@ -413,7 +417,8 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
         max_info_scores = []
         min_expected_scores = [] 
-        total_approx_curve_score = []
+        approx_curve_scores = []
+        super_heuristic_scores = []
         
         for answer in possible_words:
             guesses = []
@@ -432,26 +437,22 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
             if use_approximation_curve:
                 approx_curve_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=use_approximation_curve)
-                total_approx_curve_score.append(approx_curve_score)
+                approx_curve_scores.append(approx_curve_score)
 
             if super_heuristic:
                 info_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=True, expected_scores_heuristic=False, super_heuristic=super_heuristic, use_approximation_curve=False)
-                max_info_scores.append(info_score)
                 expected_score = solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=hard_mode, purely_maximize_information=False, expected_scores_heuristic=True, super_heuristic=super_heuristic, use_approximation_curve=False)
-                min_expected_scores.append(expected_score)
+                super_heuristic_scores.append(min(info_score, expected_score))
 
         total_max_info_score.append(np.sum(max_info_scores)+1) if purely_maximize_information or super_heuristic else None
         total_min_expected_score.append(np.sum(min_expected_scores)+1) if expected_scores_heuristic or super_heuristic else None
         total_approx_curve_score.append(np.sum(total_approx_curve_score)+1)  if use_approximation_curve else None
+        total_super_heuristic_score.append(np.sum(super_heuristic_scores)+1) if super_heuristic else None
 
     max_info_score_indices = np.where(total_max_info_score == np.amin(total_max_info_score))[0] if purely_maximize_information or super_heuristic else None
     min_expected_score_indices = np.where(total_min_expected_score == np.amin(total_min_expected_score))[0] if expected_scores_heuristic or super_heuristic else None
     approx_curve_score_indices = np.where(total_approx_curve_score == np.amin(total_approx_curve_score))[0] if use_approximation_curve else None
-    if super_heuristic:
-        if np.amin(total_max_info_score) < np.amin(total_min_expected_score):
-            super_heuristic_indices = max_info_score_indices
-        else:
-            super_heuristic_indices = min_expected_score_indices
+    super_heuristic_indices = np.where(total_super_heuristic_score == np.amin(total_super_heuristic_score))[0] if super_heuristic else None
 
     ## TODO: @AB: try ascending order instead of the default descending alphabetical order. I expect performance to improve.
 

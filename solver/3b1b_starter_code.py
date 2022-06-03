@@ -304,6 +304,7 @@ def simulate_games(first_guess=None,
 
     # Go through each answer in the test set, play the game,
     # and keep track of the stats.
+
     scores = np.zeros(0, dtype=int)
     game_results = []
     mystery_list_lengths = []
@@ -438,7 +439,7 @@ if __name__ == "__main__":
             expected_scores_heuristic =False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
         )
