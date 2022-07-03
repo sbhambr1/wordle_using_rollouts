@@ -1,0 +1,21 @@
+salet
+[0, 44, 1044, 1171, 56] 8184 3.535205183585313
+Failure case guesses: 
+{}
+soare
+[0, 29, 1005, 1192, 89] 8286 3.5792656587473
+Failure case guesses: 
+{}
+trace
+[1, 41, 1045, 1163, 65] 8195 3.5399568034557234
+Failure case guesses: 
+{}
+slate
+[1, 44, 1047, 1167, 55, 1] 8179 3.53304535637149
+Failure case guesses: 
+{}
+crane
+[1, 39, 1028, 1193, 54] 8205 3.5442764578833694
+Failure case guesses: 
+{}
+dealt

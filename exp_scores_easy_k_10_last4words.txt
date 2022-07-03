@@ -1,0 +1,17 @@
+dealt
+[1, 36, 972, 1244, 62] 8275 3.57451403887689
+Failure case guesses: 
+{}
+carse
+[0, 33, 1032, 1182, 65, 3] 8233 3.5563714902807777
+Failure case guesses: 
+{}
+scamp
+[1, 39, 753, 1431, 89, 2] 8519 3.679913606911447
+Failure case guesses: 
+{}
+scowl
+[1, 24, 733, 1444, 113] 8589 3.710151187904968
+Failure case guesses: 
+{}
+--- 546821.7211065292 seconds ---

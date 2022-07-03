@@ -421,7 +421,9 @@ if __name__ == "__main__":
 
     # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
 
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
+    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
+
+    first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
     saving_results_to_csv = False
 
@@ -433,10 +435,10 @@ if __name__ == "__main__":
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
-            super_heuristic=True,
+            super_heuristic=False,
             purely_maximize_information=False,
             use_approximation_curve=False,
-            expected_scores_heuristic =False,
+            expected_scores_heuristic =True,
             rollout_begin_at=2,
             rollout_top_k=10,
             hard_mode=False,
