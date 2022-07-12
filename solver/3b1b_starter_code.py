@@ -226,9 +226,11 @@ if __name__ == "__main__":
 
     # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
 
-    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
+    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
+
+    first_guesses = ["salet", "soare"]
 
     saving_results_to_csv = False
 
