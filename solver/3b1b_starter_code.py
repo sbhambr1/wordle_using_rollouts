@@ -28,199 +28,6 @@ warnings.filterwarnings("ignore")
 
 # Run simulated wordle games
 
-def get_two_step_score_lower_bound(first_guess, allowed_words, possible_words): # not being used right now, and is a utility function for additional analysis
-    """
-    Useful to prove what the minimum possible average score could be
-    for a given initial guess
-    """
-    N = len(possible_words)
-    buckets = get_word_buckets(first_guess, possible_words)
-    min_score = 0
-    for bucket in buckets:
-        if len(bucket) == 0:
-            continue
-        lower_bounds = get_score_lower_bounds(allowed_words, bucket)
-        min_score += (len(bucket) / N) * lower_bounds.min()
-    p = (1 / len(possible_words)) * (first_guess in possible_words) 
-    return p + (1 - p) * (1 + min_score)
-
-def find_top_scorers(n_top_candidates=100, quiet=True, file_ext="", **kwargs): # not being used right now, but seems like a utility function for additional analysis
-    # Run find_best_two_step_entropy first
-    file = os.path.join(mu.directories.get_directories()["data"], "wordle", "best_double_entropies.json")
-    with open(file) as fp:
-        double_ents = json.load(fp)
-
-    answers = get_word_list(short=True)
-    priors = get_true_wordle_prior()
-    guess_to_score = {}
-    guess_to_dist = {}
-
-    for row in ProgressDisplay(double_ents[:n_top_candidates]):
-        first_guess = row[0]
-        result, decision_map = simulate_games(
-            first_guess, priors=priors,
-            optimize_using_lower_bound=True,
-            quiet=quiet,
-            **kwargs,
-        )
-        average = result["average_score"]
-        total = int(np.round(average * len(answers)))
-        guess_to_score[first_guess] = total
-        guess_to_dist[first_guess] = result["score_distribution"]
-
-    top_scorers = sorted(list(guess_to_score.keys()), key=lambda w: guess_to_score[w])
-    result = [[w, guess_to_score[w], guess_to_dist[w]] for w in top_scorers]
-
-    file = os.path.join(
-        mu.directories.get_directories()["data"], "wordle",
-        "best_scores" + file_ext + ".json",
-    )
-    with open(file, 'w') as fp:
-        json.dump(result, fp)
-
-    return result
-
-def find_best_two_step_entropy(): # not being used right now, but seems like a utility function for additional analysis
-    words = get_word_list()
-    answers = get_word_list(short=True)
-    priors = get_true_wordle_prior()
-
-    ents = get_entropies(words, answers, get_weights(answers, priors))
-    sorted_indices = np.argsort(ents)
-    top_candidates = np.array(words)[sorted_indices[:-250:-1]]
-    top_ents = ents[sorted_indices[:-250:-1]]
-
-    ent_file = os.path.join(mu.directories.get_directories()["data"], "wordle", "best_entropies.json")
-    with open(ent_file, 'w') as fp:
-        json.dump([[tc, te] for tc, te in zip(top_candidates, top_ents)], fp)
-
-    ents2 = get_average_second_step_entropies(
-        top_candidates, words, answers, priors,
-    )
-
-    total_ents = top_ents + ents2
-    sorted_indices2 = np.argsort(total_ents)
-
-    double_ents = [
-        [top_candidates[i], top_ents[i], ents2[i]]
-        for i in sorted_indices2[::-1]
-    ]
-
-    ent2_file = os.path.join(mu.directories.get_directories()["data"], "wordle", "best_double_entropies.json")
-    with open(ent2_file, 'w') as fp:
-        json.dump(double_ents, fp)
-
-    return double_ents
-
-def find_smallest_second_guess_buckets(n_top_picks=100): # not being used right now, but seems like a utility function for additional analysis
-    all_words = get_word_list()
-    possibilities = get_word_list(short=True)
-    priors = get_true_wordle_prior()
-    weights = get_weights(possibilities, priors)
-
-    dists = get_pattern_distributions(all_words, possibilities, weights)
-    sorted_indices = np.argsort((dists**2).sum(1))
-
-    top_indices = sorted_indices[:n_top_picks]
-    top_picks = np.array(all_words)[top_indices]
-    top_dists = dists[top_indices]
-    # Figure out the average number of matching words there will
-    # be after two steps of game play
-    avg_ts_buckets = []
-    for first_guess, dist in ProgressDisplay(list(zip(top_picks, top_dists))):
-        buckets = get_word_buckets(first_guess, possibilities)
-        avg_ts_bucket = 0
-        for p, bucket in zip(dist, buckets):
-            weights = get_weights(bucket, priors)
-            sub_dists = get_pattern_distributions(all_words, bucket, weights)
-            min_ts_bucket = len(bucket) * (sub_dists**2).sum(1).min()
-            avg_ts_bucket += p * min_ts_bucket
-        avg_ts_buckets.append(avg_ts_bucket)
-
-    result = []
-    for j in np.argsort(avg_ts_buckets):
-        i = top_indices[j]
-        result.append((
-            # Word
-            all_words[i],
-            # Average bucket size after first guess
-            len(possibilities) * (dists[i]**2).sum(),
-            # Average bucket size after second, with optimal
-            # play.
-            avg_ts_buckets[j],
-        ))
-    return result
-
-def get_optimal_second_guess_map(first_guess, n_top_picks=10, regenerate=False): # not being used right now, but finds answer in a different way probably?
-    with open(SECOND_GUESS_MAP_FILE) as fp:
-        all_sgms = json.load(fp)
-
-    if first_guess in all_sgms and not regenerate:
-        return all_sgms[first_guess]
-
-    log.info("\n".join([
-        f"Generating optimal second guess map for {first_guess}.",
-        "This involves brute forcing many simulations",
-        "so can take a little while."
-    ]))
-
-    sgm = [""] * 3**5
-    all_words = get_word_list()
-    wordle_answers = get_word_list(short=True)
-    priors = get_true_wordle_prior()
-
-    buckets = get_word_buckets(first_guess, wordle_answers)
-    for pattern, bucket in ProgressDisplay(list(enumerate(buckets)), leave=False):
-        sgm[pattern] = brute_force_optimal_guess(
-            all_words, bucket, priors,
-            n_top_picks=n_top_picks,
-            display_progress=True
-        )
-
-    # Save to file
-    with open(SECOND_GUESS_MAP_FILE) as fp:
-        all_sgms = json.load(fp)
-    all_sgms[first_guess] = sgm
-    with open(SECOND_GUESS_MAP_FILE, 'w') as fp:
-        json.dump(all_sgms, fp)
-
-    return sgm
-
-def gather_entropy_to_score_data(first_guess="crane", priors=None): # not being used right now, but finds answer in a different way
-    words = get_word_list()
-    answers = get_word_list(short=True)
-    if priors is None:
-        priors = get_true_wordle_prior()
-
-    # List of entropy/score pairs
-    ent_score_pairs = []
-
-    for answer in ProgressDisplay(answers):
-        score = 1
-        possibilities = list(filter(lambda w: priors[w] > 0, words))
-        guess = first_guess
-        guesses = []
-        entropies = []
-        while True:
-            guesses.append(guess)
-            weights = get_weights(possibilities, priors)
-            entropies.append(entropy_of_distributions(weights))
-            if guess == answer:
-                break
-            possibilities = get_possible_words(
-                guess, get_pattern(guess, answer), possibilities
-            )
-            guess = optimal_guess(words, possibilities, priors)
-            score += 1
-
-        for sc, ent in zip(it.count(1), reversed(entropies)):
-            ent_score_pairs.append((ent, sc))
-
-    with open(ENT_SCORE_PAIRS_FILE, 'w') as fp:
-        json.dump(ent_score_pairs, fp)
-
-    return ent_score_pairs
-
 def simulate_games(first_guess=None,
                    priors=None,
                    look_two_ahead=False,
@@ -243,6 +50,7 @@ def simulate_games(first_guess=None,
                    quiet=True,
                    track_failures=False
                    ):
+
     all_words = get_word_list(short=False)
     short_word_list = get_word_list(short=True)
 
@@ -342,16 +150,13 @@ def simulate_games(first_guess=None,
                     for guess, pattern in zip(guesses, patterns):
                         choices = get_possible_words(guess, pattern, choices)
 
-                computed_guess = brute_force_optimal_guess(
-                choices, possibilities, priors,
-                n_top_picks=rollout_top_k, 
-                pattern=pattern,
-                super_heuristic=super_heuristic,
-                optimize_using_lower_bound=optimize_using_lower_bound,
-                purely_maximize_information=purely_maximize_information,
-                use_approximation_curve=use_approximation_curve,
-                expected_scores_heuristic=expected_scores_heuristic,
-                hard_mode=hard_mode)
+                computed_guess = one_step_lookahead_minimization(guess_words=choices,
+                                                                 mystery_words=possibilities,
+                                                                 priors=priors,
+                                                                 heuristic='min_expected_scores',
+                                                                 top_picks=rollout_top_k,
+                                                                 pattern=pattern,
+                                                                 hard_mode=hard_mode)
 
                 guess=computed_guess
                 # guess = next_guess_map[phash]
@@ -421,9 +226,9 @@ if __name__ == "__main__":
 
     # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
 
-    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
+    first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["dealt", "carse", "scamp", "scowl"]
+    # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
     saving_results_to_csv = False
 

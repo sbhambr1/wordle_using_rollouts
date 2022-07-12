@@ -21,29 +21,6 @@ APPROXIMATION_CURVE_FILE = os.path.join(DATA_DIR, "approximation_curve_data.npy"
 
 # Solvers
 
-def get_guess_values_array(allowed_words, possible_words, priors, look_two_ahead=False):
-    weights = get_weights(possible_words, priors)
-    ents1 = get_entropies(allowed_words, possible_words, weights)
-    probs = np.array([
-        0 if word not in possible_words else weights[possible_words.index(word)]
-        for word in allowed_words
-    ])
-
-    if look_two_ahead: # Extend this to multi-step lookahead
-        # Look two steps out, but restricted to where second guess is
-        # amoung the remaining possible words
-        ents2 = np.zeros(ents1.shape)
-        top_indices = np.argsort(ents1)[-250:]
-        ents2[top_indices] = get_average_second_step_entropies(
-            first_guesses=np.array(allowed_words)[top_indices],
-            allowed_second_guesses=allowed_words,
-            possible_words=possible_words,
-            priors=priors
-        )
-        return np.array([ents1, ents2, probs])
-    else:
-        return np.array([ents1, probs])
-
 def entropy_to_expected_score(ent):
     """
     Based on a regression associating entropies with typical scores
@@ -92,103 +69,6 @@ def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H
                 ))
                 return expected_scores
 
-def get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
-        for i in range(look_ahead_steps):
-            sorted_indices = np.argsort(expected_scores)
-            allowed_second_guesses = get_word_list()
-            expected_scores += 1  # Push up the rest
-            
-            arg_list=[]
-            for j in sorted_indices[:n_top_candidates]:
-                tup = (j, expected_scores, allowed_words, possible_words, priors, H0, H1s, weights, word_to_weight, allowed_second_guesses)
-                arg_list.append(tup)
-            
-            thread_pool = multiprocessing.Pool()
-            expected_scores = thread_pool.starmap(get_score_i, arg_list, chunksize=5)
-
-            # for i in ProgressDisplay(sorted_indices[:n_top_candidates], leave=False):
-            #     guess = allowed_words[i]
-            #     H1 = H1s[i]
-            #     dist = get_pattern_distributions([guess], possible_words, weights)[0]
-            #     buckets = get_word_buckets(guess, possible_words)
-            #     second_guesses = [
-            #         optimal_guess(allowed_second_guesses, bucket, priors, look_two_ahead=False)
-            #         for bucket in buckets
-            #     ]
-            #     H2s = [
-            #         get_entropies([guess2], bucket, get_weights(bucket, priors))[0]
-            #         for guess2, bucket in zip(second_guesses, buckets)
-            #     ]
-            
-            #     prob = word_to_weight.get(guess, 0)
-            #     expected_scores[i] = sum((
-            #         # 1 times Probability guess1 is correct
-            #         1 * prob,
-            #         # 2 times probability guess2 is correct
-            #         2 * (1 - prob) * sum(
-            #             p * word_to_weight.get(g2, 0)
-            #             for p, g2 in zip(dist, second_guesses)
-            #         ),
-            #         # 2 plus expected score two steps from now
-            #         (1 - prob) * (2 + sum(
-            #             p * (1 - word_to_weight.get(g2, 0)) * entropy_to_expected_score(H0 - H1 - H2)
-            #             for p, g2, H2 in zip(dist, second_guesses, H2s)
-            #         ))
-            #     ))
-        return expected_scores
-
-def get_expected_scores_with_3lookahead(allowed_words, possible_words, priors, look_ahead_steps, expected_scores, n_top_candidates, H0, H1s, weights, word_to_weight):
-        for i in range(look_ahead_steps):
-            sorted_indices = np.argsort(expected_scores)
-            allowed_second_guesses = get_word_list()
-            expected_scores += 1  # Push up the rest
-            for i in ProgressDisplay(sorted_indices[:n_top_candidates], leave=False):
-                guess = allowed_words[i]
-                H1 = H1s[i]
-                dist = get_pattern_distributions([guess], possible_words, weights)[0]
-                buckets = get_word_buckets(guess, possible_words)
-                second_guesses = [
-                    optimal_guess(allowed_second_guesses, bucket, priors, look_two_ahead=False)
-                    for bucket in buckets
-                ]
-                H2s = [
-                    get_entropies([guess2], bucket, get_weights(bucket, priors))[0]
-                    for guess2, bucket in zip(second_guesses, buckets)
-                ]
-                temp_scores = expected_scores
-                temp_scores += 1
-                H3list = []
-                for word in second_guesses:
-                    dist2 = get_pattern_distributions([word], possible_words, weights)[0]
-                    buckets2 = get_word_buckets(word, possible_words)
-                    third_guesses = [
-                        optimal_guess(allowed_second_guesses, bucket2, priors, look_two_ahead=False)
-                        for bucket2 in buckets2
-                    ]
-                    H3s = [
-                        get_entropies([guess3], bucket2, get_weights(bucket2, priors))[0]
-                        for guess3, bucket2 in zip(third_guesses, buckets2)
-                    ]
-                    H3 = entropy_of_distributions(np.array(H3s))
-                    H3list.append(H3)
-
-                prob = word_to_weight.get(guess, 0)
-                expected_scores[i] = sum((
-                    # 1 times Probability guess1 is correct
-                    1 * prob,
-                    # 2 times probability guess2 is correct
-                    2 * (1 - prob) * sum(
-                        p * word_to_weight.get(g2, 0)
-                        for p, g2 in zip(dist, second_guesses)
-                    ),
-                    # 2 plus expected score two steps from now
-                    (1 - prob) * (2 + sum(
-                        p * (1 - word_to_weight.get(g2, 0)) * entropy_to_expected_score(H0 - H1 - H2 - H3)
-                        for p, g2, H2, H3 in zip(dist, second_guesses, H2s, H3list)
-                    ))
-                ))
-        return expected_scores
-
 def get_expected_scores(allowed_words, possible_words, priors,
                         look_two_ahead=False,
                         look_three_ahead=False,
@@ -206,16 +86,7 @@ def get_expected_scores(allowed_words, possible_words, priors,
     # amount of information.
     expected_scores = probs + (1 - probs) * (1 + entropy_to_expected_score(H0 - H1s))
 
-    # For the top candidates, refine the score by looking two steps out
-    # This is currently quite slow, and could be optimized to be faster.
-    # But why?
-
-    if look_two_ahead and not look_three_ahead:
-        return get_expected_scores_with_2lookahead(allowed_words, possible_words, priors, look_ahead_steps=1, expected_scores=expected_scores, n_top_candidates=5, H0=H0, H1s=H1s, weights=weights, word_to_weight=word_to_weight)
-    elif not look_two_ahead and look_three_ahead:
-        return get_expected_scores_with_3lookahead(allowed_words, possible_words, priors, look_ahead_steps=1, expected_scores=expected_scores, n_top_candidates=5, H0=H0, H1s=H1s, weights=weights, word_to_weight=word_to_weight)
-    else:    
-        return expected_scores
+    return expected_scores
 
 def get_score_lower_bounds(allowed_words, possible_words):
     """
@@ -379,6 +250,7 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
 
     if expected_scores_heuristic:
         expected_scores = get_expected_scores(all_words, possible_words, priors) 
+        # expected_scores = get_score_lower_bounds(all_words, possible_words)
         top_choices = [all_words[i] for i in np.argsort(expected_scores)[:n_top_picks]] 
         # top_entropies = [expected_scores[i] for i in np.argsort(expected_scores)[:n_top_picks]]
         total_min_expected_score = []
@@ -464,6 +336,52 @@ def brute_force_optimal_guess(all_words, possible_words, priors, n_top_picks=10,
         return top_choices[random.choice(approx_curve_score_indices)]
     else: # superheuristic case
         return top_choices[random.choice(super_heuristic_indices)]
+
+def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern=None, hard_mode=False):
+    
+    q_factors = []
+
+    for mystery_word in mystery_words:
+        guess = choice
+        guesses = []
+        patterns = []
+        possibilities = list(mystery_words)
+        score = 1
+        while guess != mystery_word:
+            possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), mystery_words)
+            if len(possibilities)==1 and possibilities[0] == mystery_word:
+                guess = mystery_word
+                continue
+            
+            guesses.append(guess)
+            patterns.append(get_pattern(guess, mystery_word))
+            next_guesses = prune_allowed_words(guess_words, possibilities)
+            if hard_mode:
+                for guess, pattern in zip(guesses, patterns):
+                    next_guesses = get_possible_words(guess, pattern, next_guesses)
+            if heuristic == 'min_expected_scores':
+                guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+                score += 1
+            else:
+                raise ValueError(f"Unknown heuristic: {heuristic}")
+        
+        q_factors.append(score)
+
+    return np.sum(q_factors)/len(mystery_words)
+            
+def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristic, top_picks=10, pattern=None, hard_mode=False):
+    
+    if heuristic == 'min_expected_scores':
+        min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
+        top_choices = [guess_words[i] for i in np.argsort(min_expected_scores)[:top_picks]]
+        mean_q_factors = []
+    else:
+        raise ValueError(f"Heuristic {heuristic} not supported.")
+
+    for choice in top_choices:
+        mean_q_factors.append(get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode))
+    
+    return top_choices[np.argmin(mean_q_factors)]
 
 if __name__ == "__main__":
 
