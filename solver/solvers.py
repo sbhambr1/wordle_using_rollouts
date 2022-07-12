@@ -381,7 +381,8 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
     for choice in top_choices:
         mean_q_factors.append(get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode))
     
-    return top_choices[np.argmin(mean_q_factors)]
+    next_guess_indices = np.where(mean_q_factors == np.amin(mean_q_factors))[0]
+    return top_choices[random.choice(next_guess_indices)]
 
 if __name__ == "__main__":
 
