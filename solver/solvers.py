@@ -349,7 +349,7 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
         score = 1
         while guess != mystery_word:
             possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), mystery_words)
-            if len(possibilities)==1 and possibilities[0] == mystery_word:
+            if len(possibilities)==1:
                 guess = mystery_word
                 continue
             
@@ -371,6 +371,9 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             
 def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristic, top_picks=10, pattern=None, hard_mode=False):
     
+    if len(mystery_words) == 1:
+        return mystery_words[0]
+
     if heuristic == 'min_expected_scores':
         min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
         top_choices = [guess_words[i] for i in np.argsort(min_expected_scores)[:top_picks]]
@@ -379,7 +382,8 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
         raise ValueError(f"Heuristic {heuristic} not supported.")
 
     for choice in top_choices:
-        mean_q_factors.append(get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode))
+        mean_q_factor = get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode)
+        mean_q_factors.append(mean_q_factor)
     
     next_guess_indices = np.where(mean_q_factors == np.amin(mean_q_factors))[0]
     return top_choices[random.choice(next_guess_indices)]

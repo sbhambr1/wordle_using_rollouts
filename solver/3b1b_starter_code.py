@@ -169,11 +169,6 @@ def simulate_games(first_guess=None,
             if score>6:
                 tracking_dict[answer] = guesses
 
-        # if answer=="bound":
-        #     print("Guesses for answer bound:")
-        #     print(guesses)
-        #Accumulate stats
-
         scores = np.append(scores, [score])
         score_dist = [
             int((scores == i).sum())
