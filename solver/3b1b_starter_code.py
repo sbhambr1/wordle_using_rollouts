@@ -254,7 +254,7 @@ if __name__ == "__main__":
             use_approximation_curve=False,
             expected_scores_heuristic =True,
             rollout_begin_at=2,
-            rollout_top_k=2,
+            rollout_top_k= 10,
             hard_mode=False,
             test_mode=False,
             track_failures=True,

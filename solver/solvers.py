@@ -344,7 +344,6 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
     q_factors = []
 
     for mystery_word in mystery_words:
-        mystery_word = 'axiom'
         guess = choice
         guesses = []
         patterns = []
@@ -363,6 +362,9 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
                 for guess, pattern in zip(guesses, patterns):
                     next_guesses = get_possible_words(guess, pattern, next_guesses)
             if heuristic == 'min_expected_scores':
+                if len(next_guesses) == 0 or len(possibilities) == 0:
+                    print("------------------------------------------------------")
+                    print(mystery_word)
                 guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
