@@ -158,6 +158,18 @@ def simulate_games(first_guess=None,
                                                                  pattern=pattern,
                                                                  hard_mode=hard_mode)
 
+                # computed_guess = brute_force_optimal_guess(
+                # choices, possibilities, priors,
+                # n_top_picks=rollout_top_k, 
+                # pattern=pattern,
+                # super_heuristic=super_heuristic,
+                # optimize_using_lower_bound=optimize_using_lower_bound,
+                # purely_maximize_information=purely_maximize_information,
+                # use_approximation_curve=use_approximation_curve,
+                # expected_scores_heuristic=expected_scores_heuristic,
+                # hard_mode=hard_mode)
+
+
                 guess=computed_guess
                 # guess = next_guess_map[phash]
             else:
@@ -242,7 +254,7 @@ if __name__ == "__main__":
             use_approximation_curve=False,
             expected_scores_heuristic =True,
             rollout_begin_at=2,
-            rollout_top_k=10,
+            rollout_top_k=2,
             hard_mode=False,
             test_mode=False,
             track_failures=True,

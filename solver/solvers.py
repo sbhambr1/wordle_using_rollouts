@@ -189,6 +189,8 @@ def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, al
 
     while guess != answer:
 
+        answer = 'axiom'
+
         possibilities = get_possible_words(guess, get_pattern(guess, answer), possibilities)
 
         if len(possibilities)==1:
@@ -342,13 +344,14 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
     q_factors = []
 
     for mystery_word in mystery_words:
+        mystery_word = 'axiom'
         guess = choice
         guesses = []
         patterns = []
         possibilities = list(mystery_words)
         score = 1
         while guess != mystery_word:
-            possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), mystery_words)
+            possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), possibilities)
             if len(possibilities)==1:
                 guess = mystery_word
                 continue
@@ -361,10 +364,9 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
                     next_guesses = get_possible_words(guess, pattern, next_guesses)
             if heuristic == 'min_expected_scores':
                 guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
-                score += 1
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
-        
+            score += 1        
         q_factors.append(score)
 
     return np.sum(q_factors)/len(mystery_words)
