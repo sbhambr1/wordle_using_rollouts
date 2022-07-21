@@ -59,7 +59,7 @@ def entropy_to_expected_score(ent):
     # and knowing that entropy of 12.54 bits seems to have average
     # score of 3.5, we add a line to account
     # we add a line which connects (0, 0) to (3.5, 12.54)
-    return min_score + 1.5 * ent / 11.5
+    return min_score + 3.5 * ent / 12.54
 
 def get_score_i(i, expected_scores, allowed_words, possible_words, priors, H0, H1s, weights, word_to_weight, allowed_second_guesses):
                 guess = allowed_words[i]
