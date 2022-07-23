@@ -48,7 +48,9 @@ def simulate_games(first_guess=None,
                    results_file=None,
                    next_guess_map_file=None,
                    quiet=True,
-                   track_failures=False
+                   track_failures=False,
+                   num_times_word_in_top_k=0,
+                   num_times_word_finally_selected=0
                    ):
 
     all_words = get_word_list(short=False)
@@ -137,44 +139,53 @@ def simulate_games(first_guess=None,
             possibilities = get_possible_words(guess, pattern, possibilities)
             possibility_counts.append(len(possibilities))
             score += 1
-            if score >= rollout_begin_at:
-                # do bruteforce optimization
-                phash = "".join(
-                str(g) + "".join(map(str, pattern_to_int_list(p)))
-                for g, p in zip(guesses, patterns))
-                
-                # if phash not in next_guess_map:
-                choices = prune_allowed_words(all_words, possibilities)
-                
-                if hard_mode:
-                    for guess, pattern in zip(guesses, patterns):
-                        choices = get_possible_words(guess, pattern, choices)
-
-                computed_guess = one_step_lookahead_minimization(guess_words=choices,
-                                                                 mystery_words=possibilities,
-                                                                 priors=priors,
-                                                                 heuristic='min_expected_scores',
-                                                                 top_picks=rollout_top_k,
-                                                                 pattern=pattern,
-                                                                 hard_mode=hard_mode)
-
-                # computed_guess = brute_force_optimal_guess(
-                # choices, possibilities, priors,
-                # n_top_picks=rollout_top_k, 
-                # pattern=pattern,
-                # super_heuristic=super_heuristic,
-                # optimize_using_lower_bound=optimize_using_lower_bound,
-                # purely_maximize_information=purely_maximize_information,
-                # use_approximation_curve=use_approximation_curve,
-                # expected_scores_heuristic=expected_scores_heuristic,
-                # hard_mode=hard_mode)
-
-
-                guess=computed_guess
-                # guess = next_guess_map[phash]
+            if len(possibilities) == 1:
+                guess = possibilities[0]
             else:
-                computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
-                guess=computed_guess
+                if score >= rollout_begin_at:
+                    # do bruteforce optimization
+                    phash = "".join(
+                    str(g) + "".join(map(str, pattern_to_int_list(p)))
+                    for g, p in zip(guesses, patterns))
+                    
+                    # if phash not in next_guess_map:
+                    choices = prune_allowed_words(all_words, possibilities)
+                    
+                    if hard_mode:
+                        for guess, pattern in zip(guesses, patterns):
+                            choices = get_possible_words(guess, pattern, choices)
+
+                    results = one_step_lookahead_minimization(guess_words=choices,
+                                                                    mystery_words=possibilities,
+                                                                    priors=priors,
+                                                                    heuristic='min_expected_scores',
+                                                                    top_picks=rollout_top_k,
+                                                                    pattern=pattern,
+                                                                    hard_mode=hard_mode,
+                                                                    num_times_word_in_top_k=0,
+                                                                    num_times_word_finally_selected=0)
+                    
+                    computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
+                    num_times_word_in_top_k += top_k_counter
+                    num_times_word_finally_selected += final_selection_counter
+
+                    # computed_guess = brute_force_optimal_guess(
+                    # choices, possibilities, priors,
+                    # n_top_picks=rollout_top_k, 
+                    # pattern=pattern,
+                    # super_heuristic=super_heuristic,
+                    # optimize_using_lower_bound=optimize_using_lower_bound,
+                    # purely_maximize_information=purely_maximize_information,
+                    # use_approximation_curve=use_approximation_curve,
+                    # expected_scores_heuristic=expected_scores_heuristic,
+                    # hard_mode=hard_mode)
+
+
+                    guess=computed_guess
+                    # guess = next_guess_map[phash]
+                else:
+                    computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
+                    guess=computed_guess
         guesses.append(guess)
 
         if track_failures:
@@ -208,7 +219,7 @@ def simulate_games(first_guess=None,
         mystery_list_lengths=mystery_list_lengths,
     )
 
-    return final_result, tracking_dict
+    return final_result, tracking_dict, num_times_word_in_top_k, num_times_word_finally_selected
 
 if __name__ == "__main__":
     start_time = time.time()
@@ -245,7 +256,7 @@ if __name__ == "__main__":
 
         print(first_guess)
         
-        results, tracking_failure = simulate_games(
+        results, tracking_failure, num_times_word_in_top_k, num_times_word_finally_selected = simulate_games(
             first_guess=first_guess,
             priors=None,
             look_two_ahead=False,
@@ -258,9 +269,11 @@ if __name__ == "__main__":
             hard_mode=False,
             test_mode=False,
             track_failures=True,
+            num_times_word_in_top_k=0,
+            num_times_word_finally_selected=0
         )
         
-        print(results["score_distribution"], results["total_guesses"], results["average_score"])
+        print(results["score_distribution"], results["total_guesses"], results["average_score"], num_times_word_in_top_k, num_times_word_finally_selected)
 
         if saving_results_to_csv:
 

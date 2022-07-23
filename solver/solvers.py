@@ -133,7 +133,7 @@ def optimal_guess(allowed_words, possible_words, priors, pattern,
                   look_two_ahead=False,
                   look_three_ahead=False,
                   optimize_using_lower_bound=False,
-                  purely_maximize_information=True,
+                  purely_maximize_information=False,
                   use_approximation_curve=False,
                 #   top_candidates=100,
                   ):
@@ -373,10 +373,20 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
 
     return np.sum(q_factors)/len(mystery_words)
             
-def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristic, top_picks=10, pattern=None, hard_mode=False):
+def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristic, top_picks=10, pattern=None, hard_mode=False, num_times_word_in_top_k=0,
+                                                                 num_times_word_finally_selected=0):
     
     if len(mystery_words) == 1:
         return mystery_words[0]
+
+    word_selected_by_heuristic = optimal_guess(
+                guess_words, mystery_words, priors, pattern,
+                look_two_ahead=False,
+                look_three_ahead=False,
+                purely_maximize_information=False,
+                optimize_using_lower_bound=False,
+                use_approximation_curve=False
+            )
 
     if heuristic == 'min_expected_scores':
         min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
@@ -385,12 +395,20 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
     else:
         raise ValueError(f"Heuristic {heuristic} not supported.")
 
+    if word_selected_by_heuristic in top_choices:
+        num_times_word_in_top_k += 1
+    else:
+        top_choices.append(word_selected_by_heuristic)
+
     for choice in top_choices:
         mean_q_factor = get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode)
         mean_q_factors.append(mean_q_factor)
     
     next_guess_indices = np.where(mean_q_factors == np.amin(mean_q_factors))[0]
-    return top_choices[random.choice(next_guess_indices)]
+    selection = top_choices[random.choice(next_guess_indices)]
+    if selection == word_selected_by_heuristic:
+        num_times_word_finally_selected += 1
+    return selection, num_times_word_in_top_k, num_times_word_finally_selected
 
 if __name__ == "__main__":
 
