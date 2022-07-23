@@ -383,7 +383,12 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
 
     if heuristic == 'min_expected_scores':
         min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
-        top_choices = [guess_words[i] for i in np.argsort(min_expected_scores)[:top_picks]]
+        min_score = np.sort(min_expected_scores)[0]
+        min_expected_scores_indices = np.where(min_expected_scores == min_score)[0]
+        if len(min_expected_scores_indices) >= top_picks:
+            top_choices = [guess_words[i] for i in min_expected_scores_indices[:top_picks]]
+        else:
+            top_choices = [guess_words[i] for i in np.argsort(min_expected_scores)[:top_picks]]
         mean_q_factors = []
     else:
         raise ValueError(f"Heuristic {heuristic} not supported.")
@@ -398,7 +403,8 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
         mean_q_factors.append(mean_q_factor)
     
     next_guess_indices = np.where(mean_q_factors == np.amin(mean_q_factors))[0]
-    selection = top_choices[random.choice(next_guess_indices)]
+    # selection = top_choices[random.choice(next_guess_indices)]
+    selection = top_choices[next_guess_indices[0]]
     if selection == word_selected_by_heuristic:
         num_times_word_finally_selected += 1
     return selection, num_times_word_in_top_k, num_times_word_finally_selected

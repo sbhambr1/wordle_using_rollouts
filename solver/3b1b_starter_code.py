@@ -121,6 +121,7 @@ def simulate_games(first_guess=None,
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         
+        answer = 'abate'
         guesses = []
         patterns = []
         possibility_counts = []
@@ -180,6 +181,7 @@ def simulate_games(first_guess=None,
                     # expected_scores_heuristic=expected_scores_heuristic,
                     # hard_mode=hard_mode)
 
+                    # computed_guess = min_expected_score_guess(choices, possibilities, priors)
 
                     guess=computed_guess
                     # guess = next_guess_map[phash]
@@ -200,6 +202,9 @@ def simulate_games(first_guess=None,
         total_guesses = scores.sum()
         average = scores.mean()
         seen.add(answer)
+
+        print(guesses)
+        break
 
         # game_results.append(dict(
         #     score=int(score),
@@ -248,7 +253,7 @@ if __name__ == "__main__":
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["salet", "soare"]
+    first_guesses = ["soare"]
 
     saving_results_to_csv = False
 
