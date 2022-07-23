@@ -121,7 +121,6 @@ def simulate_games(first_guess=None,
     
     for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
         
-        answer = 'abate'
         guesses = []
         patterns = []
         possibility_counts = []
@@ -202,10 +201,7 @@ def simulate_games(first_guess=None,
         total_guesses = scores.sum()
         average = scores.mean()
         seen.add(answer)
-
-        print(guesses)
-        break
-
+        
         # game_results.append(dict(
         #     score=int(score),
         #     answer=answer,

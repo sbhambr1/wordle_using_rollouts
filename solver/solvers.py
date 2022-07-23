@@ -348,7 +348,10 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
         guesses = []
         patterns = []
         possibilities = list(mystery_words)
-        score = 1
+        if choice == mystery_word:
+            score = -5
+        else:
+            score = 1
         while guess != mystery_word:
             possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), possibilities)
             if len(possibilities)==1:
@@ -368,7 +371,7 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
                 guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
-            score += 1        
+            score += 1 
         q_factors.append(score)
 
     return np.sum(q_factors)/len(mystery_words)
