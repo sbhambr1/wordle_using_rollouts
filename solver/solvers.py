@@ -375,18 +375,11 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             
 def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristic, top_picks=10, pattern=None, hard_mode=False, num_times_word_in_top_k=0,
                                                                  num_times_word_finally_selected=0):
-    
+                                                                 
     if len(mystery_words) == 1:
         return mystery_words[0]
 
-    word_selected_by_heuristic = optimal_guess(
-                guess_words, mystery_words, priors, pattern,
-                look_two_ahead=False,
-                look_three_ahead=False,
-                purely_maximize_information=False,
-                optimize_using_lower_bound=False,
-                use_approximation_curve=False
-            )
+    word_selected_by_heuristic = min_expected_score_guess(guess_words, mystery_words, priors)
 
     if heuristic == 'min_expected_scores':
         min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
