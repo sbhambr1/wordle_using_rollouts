@@ -1,0 +1,5 @@
+soare
+[0, 65, 1185, 973, 83, 8, 1] 8047 3.476025917926566 3862 1784
+Failure case guesses: 
+{'pound': ['soare', 'culty', 'bough', 'wound', 'mound', 'found', 'pound']}
+--- 47777.52527356148 seconds ---

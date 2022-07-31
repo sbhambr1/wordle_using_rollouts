@@ -249,7 +249,7 @@ if __name__ == "__main__":
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["soare"]
+    first_guesses = ["salet", "soare"]
 
     saving_results_to_csv = False
 
