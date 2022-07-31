@@ -365,10 +365,9 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
                 for guess, pattern in zip(guesses, patterns):
                     next_guesses = get_possible_words(guess, pattern, next_guesses)
             if heuristic == 'min_expected_scores':
-                if len(next_guesses) == 0 or len(possibilities) == 0:
-                    print("------------------------------------------------------")
-                    print(mystery_word)
                 guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+            elif heuristic == 'max_info_gain':
+                guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
             score += 1 
@@ -384,6 +383,8 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
 
     word_selected_by_heuristic = min_expected_score_guess(guess_words, mystery_words, priors)
 
+    mean_q_factors = []
+
     if heuristic == 'min_expected_scores':
         min_expected_scores = get_expected_scores(guess_words, mystery_words, priors)
         min_score = np.sort(min_expected_scores)[0]
@@ -392,7 +393,15 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
             top_choices = [guess_words[i] for i in min_expected_scores_indices[:top_picks]]
         else:
             top_choices = [guess_words[i] for i in np.argsort(min_expected_scores)[:top_picks]]
-        mean_q_factors = []
+
+    elif heuristic == 'max_info_gain':
+        max_expected_scores = get_entropy_scores(guess_words, mystery_words, priors) 
+        max_score = np.sort(max_expected_scores)[::-1][0]
+        max_expected_scores_indices = np.where(max_expected_scores == max_score)[0]
+        if len(max_expected_scores_indices) >= top_picks:
+            top_choices = [guess_words[i] for i in max_expected_scores_indices[:top_picks]]
+        else:
+            top_choices = [guess_words[i] for i in np.argsort(max_expected_scores)[::-1][:top_picks]]
     else:
         raise ValueError(f"Heuristic {heuristic} not supported.")
 
