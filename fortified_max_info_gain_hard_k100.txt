@@ -1,0 +1,9 @@
+salet
+[0, 148, 995, 987, 164, 16, 4, 1] 8181 3.5339092872570195 4186 1298
+Failure case guesses: 
+{'baste': ['salet', 'waste', 'taste', 'paste', 'haste', 'caste', 'baste'], 'boxer': ['salet', 'creed', 'roven', 'power', 'homer', 'joker', 'foyer', 'boxer'], 'catch': ['salet', 'party', 'batch', 'watch', 'match', 'hatch', 'catch'], 'daunt': ['salet', 'tacit', 'jaunt', 'vaunt', 'haunt', 'gaunt', 'daunt'], 'foyer': ['salet', 'creed', 'roven', 'power', 'homer', 'joker', 'foyer']}
+soare
+[0, 125, 968, 973, 209, 34, 6] 8337 3.6012958963282937 4386 1026
+Failure case guesses: 
+{'baste': ['soare', 'lapse', 'waste', 'taste', 'haste', 'caste', 'baste'], 'batch': ['soare', 'tical', 'caput', 'watch', 'match', 'hatch', 'batch'], 'cower': ['soare', 'mower', 'tower', 'rower', 'power', 'lower', 'cower'], 'daunt': ['soare', 'tical', 'jaunt', 'vaunt', 'haunt', 'gaunt', 'daunt'], 'goner': ['soare', 'mower', 'rover', 'poker', 'boxer', 'foyer', 'goner'], 'score': ['soare', 'swore', 'store', 'spore', 'snore', 'shore', 'score']}
+--- 18463.780396461487 seconds ---

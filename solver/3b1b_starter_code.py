@@ -158,7 +158,7 @@ def simulate_games(first_guess=None,
                     results = one_step_lookahead_minimization(guess_words=choices,
                                                                     mystery_words=possibilities,
                                                                     priors=priors,
-                                                                    heuristic='min_expected_scores', #min_expected_scores, max_info_gain
+                                                                    heuristic='max_info_gain', #min_expected_scores, max_info_gain
                                                                     top_picks=rollout_top_k,
                                                                     pattern=pattern,
                                                                     hard_mode=hard_mode,
