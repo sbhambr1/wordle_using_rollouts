@@ -1,0 +1,9 @@
+salet
+[0, 148, 999, 986, 158, 20, 4] 8175 3.5313174946004318 4175 2294
+Failure case guesses: 
+{'foyer': ['salet', 'diner', 'rower', 'mover', 'joker', 'boxer', 'foyer'], 'vaunt': ['salet', 'taint', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'waste': ['salet', 'baste', 'caste', 'haste', 'paste', 'taste', 'waste'], 'watch': ['salet', 'party', 'batch', 'catch', 'hatch', 'match', 'watch']}
+soare
+[0, 125, 965, 981, 202, 35, 7] 8338 3.6017278617710584 4387 2247
+Failure case guesses: 
+{'foyer': ['soare', 'mower', 'rover', 'joker', 'boxer', 'goner', 'foyer'], 'quake': ['soare', 'glaze', 'weave', 'abate', 'chafe', 'inane', 'quake'], 'swore': ['soare', 'score', 'shore', 'snore', 'spore', 'store', 'swore'], 'tower': ['soare', 'mower', 'cower', 'lower', 'power', 'rower', 'tower'], 'vaunt': ['soare', 'tical', 'jaunt', 'daunt', 'gaunt', 'haunt', 'vaunt'], 'waste': ['soare', 'lapse', 'baste', 'caste', 'haste', 'taste', 'waste'], 'watch': ['soare', 'tical', 'caput', 'batch', 'hatch', 'match', 'watch']}
+--- 21087.807330846786 seconds ---
