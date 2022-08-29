@@ -183,17 +183,14 @@ def approx_curve_guess(allowed_words, possible_words, pattern):
     expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
     return allowed_words[np.argmin(expected_scores)]
 
-def most_rapid_decrease_guess(allowed_words, possible_words, priors):
+def most_rapid_decrease_guess(allowed_words, possible_words, priors, mystery_word):
     if len(possible_words) == 1:
         return possible_words[0]
-    best_guess = None
-    least_num_possibilities = int(np.inf)
+    next_num_possibilities = []
     for word in allowed_words:
-        num_possibilities = len(get_possible_words(word, possible_words))
-        if num_possibilities < least_num_possibilities:
-            best_guess = word
-            least_num_possibilities = num_possibilities
-    return best_guess
+        next_num_possibilities.append(len(get_possible_words(word, get_pattern(word, mystery_word), possible_words)))
+    best_guesses = allowed_words[np.argsort(next_num_possibilities)]
+    return best_guesses[0]
 
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
 
@@ -380,6 +377,8 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
                 guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             elif heuristic == 'max_info_gain':
                 guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+            elif heuristic == 'most_rapid_decrease':
+                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors, mystery_word=mystery_word) # dependent on mystery_word!
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
             score += 1 
@@ -414,6 +413,18 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
             top_choices = [guess_words[i] for i in max_expected_scores_indices[:top_picks]]
         else:
             top_choices = [guess_words[i] for i in np.argsort(max_expected_scores)[::-1][:top_picks]]
+
+    elif heuristic == 'most_rapid_decrease':
+        next_num_possibilities = []
+        for word in guess_words:
+            next_num_possibilities.append(len(get_possible_words(word, pattern, mystery_words)))
+        min_score = np.sort(next_num_possibilities)[0]
+        min_num_possibilities_indices = np.where(next_num_possibilities == min_score)[0]
+        if len(min_num_possibilities_indices) >= top_picks:
+            top_choices = [guess_words[i] for i in min_num_possibilities_indices[:top_picks]]
+        else:
+            top_choices = [guess_words[i] for i in np.argsort(next_num_possibilities)[:top_picks]]
+
     else:
         raise ValueError(f"Heuristic {heuristic} not supported.")
 

@@ -158,7 +158,7 @@ def simulate_games(first_guess=None,
                     results = one_step_lookahead_minimization(guess_words=choices,
                                                                     mystery_words=possibilities,
                                                                     priors=priors,
-                                                                    heuristic='max_info_gain', #min_expected_scores, max_info_gain
+                                                                    heuristic='max_info_gain', #min_expected_scores, max_info_gain, most_rapid_decrease
                                                                     top_picks=rollout_top_k,
                                                                     pattern=pattern,
                                                                     hard_mode=hard_mode,
@@ -180,7 +180,13 @@ def simulate_games(first_guess=None,
                     # expected_scores_heuristic=expected_scores_heuristic,
                     # hard_mode=hard_mode)
 
+                    # Experiments for using ONLY base heuristics.
+
                     # computed_guess = min_expected_score_guess(choices, possibilities, priors)
+
+                    # computed_guess = max_info_gain_guess(choices, possibilities, priors)
+
+                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
 
                     guess=computed_guess
                     # guess = next_guess_map[phash]
