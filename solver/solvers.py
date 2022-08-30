@@ -189,8 +189,7 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors, mystery_wor
     next_num_possibilities = []
     for word in allowed_words:
         next_num_possibilities.append(len(get_possible_words(word, get_pattern(word, mystery_word), possible_words)))
-    best_guesses = allowed_words[np.argsort(next_num_possibilities)]
-    return best_guesses[0]
+    return allowed_words[np.argmin(next_num_possibilities)]
 
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
 
