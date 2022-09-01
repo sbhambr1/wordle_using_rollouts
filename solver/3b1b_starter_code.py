@@ -155,19 +155,19 @@ def simulate_games(first_guess=None,
                         for guess, pattern in zip(guesses, patterns):
                             choices = get_possible_words(guess, pattern, choices)
 
-                    results = one_step_lookahead_minimization(guess_words=choices,
-                                                                    mystery_words=possibilities,
-                                                                    priors=priors,
-                                                                    heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease
-                                                                    top_picks=rollout_top_k,
-                                                                    pattern=pattern,
-                                                                    hard_mode=hard_mode,
-                                                                    num_times_word_in_top_k=0,
-                                                                    num_times_word_finally_selected=0)
+                    # results = one_step_lookahead_minimization(guess_words=choices,
+                    #                                                 mystery_words=possibilities,
+                    #                                                 priors=priors,
+                    #                                                 heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease
+                    #                                                 top_picks=rollout_top_k,
+                    #                                                 pattern=pattern,
+                    #                                                 hard_mode=hard_mode,
+                    #                                                 num_times_word_in_top_k=0,
+                    #                                                 num_times_word_finally_selected=0)
                     
-                    computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
-                    num_times_word_in_top_k += top_k_counter
-                    num_times_word_finally_selected += final_selection_counter
+                    # computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
+                    # num_times_word_in_top_k += top_k_counter
+                    # num_times_word_finally_selected += final_selection_counter
 
                     # computed_guess = brute_force_optimal_guess(
                     # choices, possibilities, priors,
@@ -186,7 +186,7 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
-                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors, answer)
+                    computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
 
                     guess=computed_guess
                     # guess = next_guess_map[phash]
@@ -273,7 +273,7 @@ if __name__ == "__main__":
             expected_scores_heuristic=False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,

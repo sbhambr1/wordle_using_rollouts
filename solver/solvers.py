@@ -183,12 +183,15 @@ def approx_curve_guess(allowed_words, possible_words, pattern):
     expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
     return allowed_words[np.argmin(expected_scores)]
 
-def most_rapid_decrease_guess(allowed_words, possible_words, priors, mystery_word):
+def most_rapid_decrease_guess(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
     next_num_possibilities = []
     for word in allowed_words:
-        next_num_possibilities.append(len(get_possible_words(word, get_pattern(word, mystery_word), possible_words)))
+        possibility_count = 0
+        for answer in possible_words[:2]:
+            possibility_count += len(get_possible_words(word, get_pattern(word, answer), possible_words))
+        next_num_possibilities.append(possibility_count)
     return allowed_words[np.argmin(next_num_possibilities)]
 
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
