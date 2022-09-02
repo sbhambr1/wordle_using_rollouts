@@ -1,0 +1,9 @@
+salet
+[0, 119, 1031, 991, 143, 24, 6, 1] 8204 3.5438444924406047 0 0
+Failure case guesses: 
+{'foyer': ['salet', 'doner', 'rower', 'hover', 'joker', 'boxer', 'foyer'], 'pound': ['salet', 'cornu', 'bound', 'found', 'hound', 'mound', 'pound'], 'tatty': ['salet', 'catty', 'batty', 'fatty', 'patty', 'ratty', 'tatty'], 'vaunt': ['salet', 'taunt', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'watch': ['salet', 'catty', 'batch', 'hatch', 'match', 'patch', 'watch'], 'wight': ['salet', 'biont', 'fight', 'might', 'right', 'tight', 'wight'], 'wound': ['salet', 'cornu', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+soare
+[0, 84, 1007, 979, 195, 36, 12, 2] 8396 3.626781857451404 0 0
+Failure case guesses: 
+{'fixer': ['soare', 'eider', 'viner', 'firer', 'fiber', 'filer', 'fixer'], 'graze': ['soare', 'grace', 'grade', 'grape', 'grate', 'grave', 'graze'], 'grown': ['soare', 'prion', 'brown', 'crown', 'drown', 'frown', 'grown'], 'patch': ['soare', 'talcy', 'batch', 'catch', 'hatch', 'match', 'patch'], 'rover': ['soare', 'vower', 'cover', 'hover', 'lover', 'mover', 'rover'], 'rower': ['soare', 'vower', 'cower', 'lower', 'mower', 'power', 'rower'], 'shave': ['soare', 'slate', 'shape', 'shade', 'shake', 'shame', 'shave'], 'swore': ['soare', 'score', 'shore', 'snore', 'spore', 'store', 'swore'], 'tower': ['soare', 'vower', 'cower', 'lower', 'mower', 'power', 'rower', 'tower'], 'tried': ['soare', 'eider', 'cried', 'dried', 'fried', 'pried', 'tried'], 'vaunt': ['soare', 'talcy', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'waste': ['soare', 'lapse', 'baste', 'caste', 'haste', 'taste', 'waste'], 'watch': ['soare', 'talcy', 'batch', 'catch', 'hatch', 'match', 'patch', 'watch'], 'willy': ['soare', 'clint', 'dilly', 'billy', 'filly', 'hilly', 'willy']}
+--- 3553.317750453949 seconds ---

@@ -189,10 +189,15 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors):
     next_num_possibilities = []
     for word in allowed_words:
         possibility_count = 0
-        for answer in possible_words[:2]:
+        for answer in possible_words:
             possibility_count += len(get_possible_words(word, get_pattern(word, answer), possible_words))
         next_num_possibilities.append(possibility_count)
-    return allowed_words[np.argmin(next_num_possibilities)]
+    min_score = np.sort(next_num_possibilities)[0]
+    min_num_possibilities_indices = np.where(next_num_possibilities == min_score)[0]
+    for i in min_num_possibilities_indices:
+        if allowed_words[i] in possible_words:
+            return allowed_words[i]
+    return allowed_words[min_num_possibilities_indices[0]]
 
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
 
