@@ -199,6 +199,31 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors):
             return allowed_words[i]
     return allowed_words[min_num_possibilities_indices[0]]
 
+def greatest_exp_prob_guess(allowed_words, possible_words, priors):
+    if len(possible_words) == 1:
+        return possible_words[0]
+    # next_num_possibilities = []
+    next_ans_probabilities = []
+    for word in allowed_words:
+        # possibility_count = 0
+        ans_probabilities = []
+        for answer in possible_words:
+            possibilities = len(get_possible_words(word, get_pattern(word, answer), possible_words))
+            probability = 1 / possibilities
+            # possibility_count += possibilities
+            ans_probabilities.append(probability/len(possible_words))
+        # next_num_possibilities.append(possibility_count)
+        next_ans_probabilities.append(np.sum(ans_probabilities))
+    max_prob = np.sort(next_ans_probabilities)[-1]
+    max_prob_indices = np.where(next_ans_probabilities == max_prob)[0]
+    for i in max_prob_indices:
+        if allowed_words[i] in possible_words:
+            return allowed_words[i]
+    return allowed_words[max_prob_indices[0]]
+    
+
+
+
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
 
     score = 1
@@ -385,7 +410,7 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             elif heuristic == 'max_info_gain':
                 guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             elif heuristic == 'most_rapid_decrease':
-                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors, mystery_word=mystery_word) # dependent on mystery_word!
+                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors) # dependent on mystery_word!
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
             score += 1 

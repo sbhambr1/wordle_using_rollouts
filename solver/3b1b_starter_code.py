@@ -186,7 +186,9 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
-                    computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
+                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
+
+                    computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
 
                     guess=computed_guess
                     # guess = next_guess_map[phash]
@@ -273,7 +275,7 @@ if __name__ == "__main__":
             expected_scores_heuristic=False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,

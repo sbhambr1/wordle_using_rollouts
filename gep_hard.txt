@@ -1,0 +1,4 @@
+salet
+[0, 121, 1086, 929, 146, 25, 7, 1] 8153 3.521814254859611 0 0                                                                      
+Failure case guesses: 
+{'boxer': ['salet', 'diner', 'rower', 'homer', 'joker', 'coyer', 'boxer'], 'cover': ['salet', 'diner', 'rower', 'homer', 'joker', 'coyer', 'cover'], 'foyer': ['salet', 'diner', 'rower', 'homer', 'joker', 'coyer', 'foyer'], 'hound': ['salet', 'round', 'bound', 'mound', 'wound', 'found', 'hound'], 'jaunt': ['salet', 'tacit', 'daunt', 'vaunt', 'gaunt', 'haunt', 'jaunt'], 'patch': ['salet', 'canty', 'match', 'watch', 'batch', 'hatch', 'patch'], 'pound': ['salet', 'round', 'bound', 'mound', 'wound', 'found', 'hound', 'pound'], 'tight': ['salet', 'biont', 'fight', 'wight', 'might', 'right', 'tight']}
