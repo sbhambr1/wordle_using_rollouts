@@ -183,7 +183,7 @@ def approx_curve_guess(allowed_words, possible_words, pattern):
     expected_scores = get_expected_scores_using_approximation_curve(allowed_words, possible_words, pattern)
     return allowed_words[np.argmin(expected_scores)]
 
-def most_rapid_decrease_guess(allowed_words, possible_words, priors):
+def most_rapid_decrease_guess_naive(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
     next_num_possibilities = []
@@ -199,20 +199,35 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors):
             return allowed_words[i]
     return allowed_words[min_num_possibilities_indices[0]]
 
-def greatest_exp_prob_guess(allowed_words, possible_words, priors):
+def most_rapid_decrease_guess(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
-    # next_num_possibilities = []
+    bucket_sums = []
+    for word in allowed_words:
+        bucket_squared_sum = 0
+        buckets = get_word_buckets(word, possible_words)
+        for bucket in buckets:
+            if bucket != []:
+                bucket_squared_sum += len(bucket)**2
+        bucket_sums.append(bucket_squared_sum)
+    min_score = np.sort(bucket_sums)[0]
+    min_bucket_sums_indices = np.where(bucket_sums == min_score)[0]
+    for i in min_bucket_sums_indices:
+        if allowed_words[i] in possible_words:
+            return allowed_words[i]
+    return allowed_words[min_bucket_sums_indices[0]]
+
+
+def greatest_exp_prob_guess_naive(allowed_words, possible_words, priors):
+    if len(possible_words) == 1:
+        return possible_words[0]
     next_ans_probabilities = []
     for word in allowed_words:
-        # possibility_count = 0
         ans_probabilities = []
         for answer in possible_words:
             possibilities = len(get_possible_words(word, get_pattern(word, answer), possible_words))
             probability = 1 / possibilities
-            # possibility_count += possibilities
             ans_probabilities.append(probability/len(possible_words))
-        # next_num_possibilities.append(possibility_count)
         next_ans_probabilities.append(np.sum(ans_probabilities))
     max_prob = np.sort(next_ans_probabilities)[-1]
     max_prob_indices = np.where(next_ans_probabilities == max_prob)[0]
