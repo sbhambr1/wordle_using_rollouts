@@ -217,7 +217,6 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors):
             return allowed_words[i]
     return allowed_words[min_bucket_sums_indices[0]]
 
-
 def greatest_exp_prob_guess_naive(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
@@ -236,8 +235,23 @@ def greatest_exp_prob_guess_naive(allowed_words, possible_words, priors):
             return allowed_words[i]
     return allowed_words[max_prob_indices[0]]
     
-
-
+def greatest_exp_prob_guess(allowed_words, possible_words, priors):
+    if len(possible_words) == 1:
+        return possible_words[0]
+    bucket_counts = []
+    for word in allowed_words:
+        bucket_count = 0
+        buckets = get_word_buckets(word, possible_words)
+        for bucket in buckets:
+            if bucket != []:
+                bucket_count += 1
+        bucket_counts.append(bucket_count)
+    min_score = np.sort(bucket_counts)[0]
+    min_bucket_counts_indices = np.where(bucket_counts == min_score)[0]
+    for i in min_bucket_counts_indices:
+        if allowed_words[i] in possible_words:
+            return allowed_words[i]
+    return allowed_words[min_bucket_counts_indices[0]]
 
 def solve_simulation(guess, answer, guesses, patterns, possibilities, priors, all_words, hard_mode=False, purely_maximize_information=False, expected_scores_heuristic=False, super_heuristic=False, use_approximation_curve=False):
 
@@ -425,7 +439,9 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             elif heuristic == 'max_info_gain':
                 guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             elif heuristic == 'most_rapid_decrease':
-                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors) # dependent on mystery_word!
+                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+            elif heuristic == 'greatest_exp_prob':
+                guess = greatest_exp_prob_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
             else:
                 raise ValueError(f"Unknown heuristic: {heuristic}")
             score += 1 
@@ -462,15 +478,36 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
             top_choices = [guess_words[i] for i in np.argsort(max_expected_scores)[::-1][:top_picks]]
 
     elif heuristic == 'most_rapid_decrease':
-        next_num_possibilities = []
+        bucket_sums = []
         for word in guess_words:
-            next_num_possibilities.append(len(get_possible_words(word, pattern, mystery_words)))
-        min_score = np.sort(next_num_possibilities)[0]
-        min_num_possibilities_indices = np.where(next_num_possibilities == min_score)[0]
+            bucket_squared_sum = 0
+            buckets = get_word_buckets(word, mystery_words)
+            for bucket in buckets:
+                if bucket != []:
+                    bucket_squared_sum += len(bucket)**2
+            bucket_sums.append(bucket_squared_sum)
+        min_score = np.sort(bucket_sums)[0]
+        min_num_possibilities_indices = np.where(bucket_sums == min_score)[0]
         if len(min_num_possibilities_indices) >= top_picks:
             top_choices = [guess_words[i] for i in min_num_possibilities_indices[:top_picks]]
         else:
-            top_choices = [guess_words[i] for i in np.argsort(next_num_possibilities)[:top_picks]]
+            top_choices = [guess_words[i] for i in np.argsort(bucket_sums)[:top_picks]]
+
+    elif heuristic == 'greatest_exp_prob':
+        bucket_counts = []
+        for word in mystery_words:
+            bucket_count = 0
+            buckets = get_word_buckets(word, mystery_words)
+            for bucket in buckets:
+                if bucket != []:
+                    bucket_count += 1
+            bucket_counts.append(bucket_count)
+        min_score = np.sort(bucket_counts)[0]
+        min_bucket_counts_indices = np.where(bucket_counts == min_score)[0]
+        if len(min_bucket_counts_indices) >= top_picks:
+            top_choices = [guess_words[i] for i in min_bucket_counts_indices[:top_picks]]
+        else:
+            top_choices = [guess_words[i] for i in np.argsort(bucket_counts)[:top_picks]]
 
     else:
         raise ValueError(f"Heuristic {heuristic} not supported.")
