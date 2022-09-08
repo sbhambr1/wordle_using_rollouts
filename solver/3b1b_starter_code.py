@@ -158,7 +158,7 @@ def simulate_games(first_guess=None,
                     results = one_step_lookahead_minimization(guess_words=choices,
                                                                     mystery_words=possibilities,
                                                                     priors=priors,
-                                                                    heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease
+                                                                    heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
                                                                     top_picks=rollout_top_k,
                                                                     pattern=pattern,
                                                                     hard_mode=hard_mode,
@@ -257,7 +257,7 @@ if __name__ == "__main__":
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["salet", "soare"]
+    first_guesses = ["soare"]
 
     saving_results_to_csv = False
 
