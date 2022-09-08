@@ -257,7 +257,7 @@ if __name__ == "__main__":
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["soare"]
+    first_guesses = ["salet", "soare"]
 
     saving_results_to_csv = False
 
@@ -275,7 +275,7 @@ if __name__ == "__main__":
             expected_scores_heuristic=False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,
