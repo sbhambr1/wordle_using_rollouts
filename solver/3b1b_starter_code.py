@@ -155,19 +155,19 @@ def simulate_games(first_guess=None,
                         for guess, pattern in zip(guesses, patterns):
                             choices = get_possible_words(guess, pattern, choices)
 
-                    results = one_step_lookahead_minimization(guess_words=choices,
-                                                                    mystery_words=possibilities,
-                                                                    priors=priors,
-                                                                    heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
-                                                                    top_picks=rollout_top_k,
-                                                                    pattern=pattern,
-                                                                    hard_mode=hard_mode,
-                                                                    num_times_word_in_top_k=0,
-                                                                    num_times_word_finally_selected=0)
+                    # results = one_step_lookahead_minimization(guess_words=choices,
+                    #                                                 mystery_words=possibilities,
+                    #                                                 priors=priors,
+                    #                                                 heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                    #                                                 top_picks=rollout_top_k,
+                    #                                                 pattern=pattern,
+                    #                                                 hard_mode=hard_mode,
+                    #                                                 num_times_word_in_top_k=0,
+                    #                                                 num_times_word_finally_selected=0)
                     
-                    computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
-                    num_times_word_in_top_k += top_k_counter
-                    num_times_word_finally_selected += final_selection_counter
+                    # computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
+                    # num_times_word_in_top_k += top_k_counter
+                    # num_times_word_finally_selected += final_selection_counter
 
                     # computed_guess = brute_force_optimal_guess(
                     # choices, possibilities, priors,
@@ -186,7 +186,7 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
-                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
+                    computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
 
                     # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
 
@@ -257,7 +257,10 @@ if __name__ == "__main__":
 
     # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
-    first_guesses = ["salet", "soare"]
+    # first_guesses = ["salet", "soare"] #testing
+
+    first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
+                    'raise', 'clout', 'nymph'] #existing works
 
     saving_results_to_csv = False
 
@@ -268,14 +271,9 @@ if __name__ == "__main__":
         results, tracking_failure, num_times_word_in_top_k, num_times_word_finally_selected = simulate_games(
             first_guess=first_guess,
             priors=None,
-            look_two_ahead=False,
-            super_heuristic=False,
-            purely_maximize_information=False,
-            use_approximation_curve=False,
-            expected_scores_heuristic=False,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,

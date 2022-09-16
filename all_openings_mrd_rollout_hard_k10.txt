@@ -1,0 +1,57 @@
+salet
+[0, 142, 1045, 942, 155, 25, 5, 1] 8155 3.5226781857451406 4088 2955
+Failure case guesses: 
+{'foyer': ['salet', 'diner', 'rower', 'mover', 'joker', 'boxer', 'foyer'], 'jaunt': ['salet', 'tacit', 'vaunt', 'daunt', 'gaunt', 'haunt', 'jaunt'], 'pound': ['salet', 'round', 'bound', 'found', 'hound', 'mound', 'pound'], 'waste': ['salet', 'baste', 'caste', 'haste', 'paste', 'taste', 'waste'], 'watch': ['salet', 'canty', 'batch', 'hatch', 'match', 'patch', 'watch'], 'wound': ['salet', 'round', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+reast
+[0, 143, 1026, 951, 164, 22, 5, 4] 8187 3.5365010799136067 3834 2640
+Failure case guesses: 
+{'foyer': ['reast', 'cried', 'mower', 'poker', 'hover', 'boxer', 'foyer'], 'goner': ['reast', 'cried', 'mower', 'poker', 'hover', 'boxer', 'foyer', 'goner'], 'match': ['reast', 'titan', 'aptly', 'batch', 'catch', 'hatch', 'match'], 'pound': ['reast', 'could', 'bound', 'found', 'hound', 'mound', 'pound'], 'taunt': ['reast', 'fault', 'daunt', 'gaunt', 'haunt', 'jaunt', 'taunt'], 'vaunt': ['reast', 'fault', 'daunt', 'gaunt', 'haunt', 'jaunt', 'taunt', 'vaunt'], 'waste': ['reast', 'baste', 'caste', 'haste', 'paste', 'taste', 'waste'], 'watch': ['reast', 'titan', 'aptly', 'batch', 'catch', 'hatch', 'match', 'watch'], 'wound': ['reast', 'could', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+crate
+[1, 144, 1016, 960, 162, 26, 5, 1] 8186 3.5360691144708425 3993 2287
+Failure case guesses: 
+{'joker': ['crate', 'resin', 'power', 'mover', 'boxer', 'foyer', 'joker'], 'pound': ['crate', 'solid', 'bound', 'found', 'hound', 'mound', 'pound'], 'rarer': ['crate', 'gaper', 'baker', 'safer', 'waver', 'layer', 'rarer'], 'vaunt': ['crate', 'talon', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'watch': ['crate', 'latch', 'batch', 'hatch', 'match', 'patch', 'watch'], 'wound': ['crate', 'solid', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+trace
+[1, 146, 1021, 957, 161, 22, 5, 2] 8172 3.530021598272138 4003 2120
+Failure case guesses: 
+{'joker': ['trace', 'resin', 'power', 'mover', 'boxer', 'foyer', 'joker'], 'patch': ['trace', 'batch', 'catch', 'hatch', 'latch', 'match', 'patch'], 'pound': ['trace', 'solid', 'bound', 'found', 'hound', 'mound', 'pound'], 'rarer': ['trace', 'gaper', 'baker', 'safer', 'waver', 'layer', 'rarer'], 'vaunt': ['trace', 'fault', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'watch': ['trace', 'batch', 'catch', 'hatch', 'latch', 'match', 'patch', 'watch'], 'wound': ['trace', 'solid', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+slate
+[1, 142, 1037, 947, 156, 27, 4, 1] 8162 3.5257019438444925 4180 2742
+Failure case guesses: 
+{'foyer': ['slate', 'diner', 'rower', 'mover', 'joker', 'boxer', 'foyer'], 'pound': ['slate', 'round', 'bound', 'found', 'hound', 'mound', 'pound'], 'vaunt': ['slate', 'habit', 'taunt', 'daunt', 'gaunt', 'jaunt', 'vaunt'], 'waste': ['slate', 'baste', 'caste', 'haste', 'paste', 'taste', 'waste'], 'wound': ['slate', 'round', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+trape
+[0, 128, 1049, 944, 166, 22, 5, 1] 8184 3.535205183585313 4070 2708
+Failure case guesses: 
+{'goner': ['trape', 'riles', 'mower', 'cover', 'boxer', 'foyer', 'goner'], 'joker': ['trape', 'riles', 'mower', 'cover', 'boxer', 'foyer', 'goner', 'joker'], 'jolly': ['trape', 'coils', 'dolly', 'folly', 'golly', 'holly', 'jolly'], 'vaunt': ['trape', 'fault', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'watch': ['trape', 'fault', 'batch', 'catch', 'hatch', 'match', 'watch'], 'willy': ['trape', 'coils', 'billy', 'dilly', 'filly', 'hilly', 'willy']}
+slane
+[0, 130, 1029, 960, 169, 22, 4, 1] 8200 3.5421166306695464 4225 2782
+Failure case guesses: 
+{'foyer': ['slane', 'cited', 'rower', 'homer', 'joker', 'boxer', 'foyer'], 'pound': ['slane', 'grind', 'bound', 'found', 'hound', 'mound', 'pound'], 'vaunt': ['slane', 'taint', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'waste': ['slane', 'pause', 'baste', 'caste', 'haste', 'taste', 'waste'], 'wound': ['slane', 'grind', 'bound', 'found', 'hound', 'mound', 'pound', 'wound']}
+prate
+[0, 130, 1045, 947, 165, 23, 4, 1] 8182 3.534341252699784 4067 2859
+Failure case guesses: 
+{'goner': ['prate', 'riles', 'mower', 'cover', 'boxer', 'foyer', 'goner'], 'joker': ['prate', 'riles', 'mower', 'cover', 'boxer', 'foyer', 'goner', 'joker'], 'jolly': ['prate', 'coils', 'dolly', 'folly', 'golly', 'holly', 'jolly'], 'vaunt': ['prate', 'talon', 'jaunt', 'daunt', 'gaunt', 'haunt', 'vaunt'], 'willy': ['prate', 'coils', 'billy', 'dilly', 'filly', 'hilly', 'willy']}
+crane
+[1, 137, 1029, 945, 173, 23, 5, 2] 8196 3.540388768898488 3725 2658
+Failure case guesses: 
+{'crazy': ['crane', 'crass', 'crack', 'craft', 'cramp', 'crawl', 'crazy'], 'homer': ['crane', 'reset', 'lover', 'power', 'boxer', 'foyer', 'homer'], 'joker': ['crane', 'reset', 'lover', 'power', 'boxer', 'foyer', 'homer', 'joker'], 'mound': ['crane', 'stony', 'wound', 'bound', 'found', 'hound', 'mound'], 'pound': ['crane', 'stony', 'wound', 'bound', 'found', 'hound', 'mound', 'pound'], 'vaunt': ['crane', 'taint', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt'], 'watch': ['crane', 'mocha', 'batch', 'hatch', 'latch', 'patch', 'watch']}
+carle
+[0, 137, 1013, 974, 162, 25, 3, 1] 8198 3.5412526997840175 4066 2871
+Failure case guesses: 
+{'goner': ['carle', 'reist', 'power', 'homer', 'boxer', 'foyer', 'goner'], 'joker': ['carle', 'reist', 'power', 'homer', 'boxer', 'foyer', 'goner', 'joker'], 'paper': ['carle', 'tamer', 'gayer', 'safer', 'waver', 'baker', 'paper'], 'vaunt': ['carle', 'tansy', 'daunt', 'gaunt', 'haunt', 'jaunt', 'vaunt']}
+train
+[1, 128, 1055, 928, 166, 33, 4] 8190 3.537796976241901 4207 3007
+Failure case guesses: 
+{'foyer': ['train', 'cores', 'mower', 'rover', 'joker', 'boxer', 'foyer'], 'shave': ['train', 'shale', 'shade', 'shake', 'shame', 'shape', 'shave'], 'watch': ['train', 'cleat', 'batch', 'hatch', 'match', 'patch', 'watch'], 'wound': ['train', 'hones', 'bound', 'found', 'mound', 'pound', 'wound']}
+raise
+[1, 128, 977, 980, 187, 30, 10, 2] 8309 3.5892008639308854 4187 2656
+Failure case guesses: 
+{'foyer': ['raise', 'deter', 'cower', 'mover', 'poker', 'boxer', 'foyer'], 'goner': ['raise', 'deter', 'cower', 'mover', 'poker', 'boxer', 'foyer', 'goner'], 'mammy': ['raise', 'talcy', 'dandy', 'baggy', 'happy', 'jazzy', 'mammy'], 'patch': ['raise', 'talcy', 'batch', 'catch', 'hatch', 'match', 'patch'], 'swore': ['raise', 'scree', 'shore', 'snore', 'spore', 'store', 'swore'], 'vaunt': ['raise', 'talcy', 'haunt', 'daunt', 'gaunt', 'jaunt', 'vaunt'], 'waste': ['raise', 'caste', 'baste', 'haste', 'paste', 'taste', 'waste'], 'watch': ['raise', 'talcy', 'batch', 'catch', 'hatch', 'match', 'patch', 'watch'], 'water': ['raise', 'lager', 'taper', 'cater', 'eater', 'hater', 'water'], 'wight': ['raise', 'pilot', 'fight', 'might', 'night', 'tight', 'wight'], 'willy': ['raise', 'pilot', 'filmy', 'billy', 'dilly', 'hilly', 'willy'], 'wound': ['raise', 'blond', 'found', 'hound', 'mound', 'pound', 'wound']}
+clout
+[1, 102, 924, 1079, 180, 24, 4, 1] 8373 3.6168466522678187 4366 2339
+Failure case guesses: 
+{'hilly': ['clout', 'lapel', 'willy', 'billy', 'dilly', 'filly', 'hilly'], 'joker': ['clout', 'moner', 'power', 'rover', 'boxer', 'foyer', 'joker'], 'silly': ['clout', 'lapel', 'willy', 'billy', 'dilly', 'filly', 'hilly', 'silly'], 'vaunt': ['clout', 'gaunt', 'daunt', 'haunt', 'jaunt', 'taunt', 'vaunt'], 'wound': ['clout', 'rough', 'mouse', 'bound', 'found', 'pound', 'wound']}
+nymph
+[1, 62, 698, 1236, 290, 25, 3] 8784 3.7943844492440606 3881 2843
+Failure case guesses: 
+{'grown': ['nymph', 'atone', 'crown', 'brown', 'drown', 'frown', 'grown'], 'vaunt': ['nymph', 'atone', 'taint', 'daunt', 'gaunt', 'jaunt', 'vaunt'], 'wound': ['nymph', 'atone', 'found', 'bound', 'round', 'sound', 'wound']}
+--- 97012.27113938332 seconds ---
