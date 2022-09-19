@@ -184,9 +184,9 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = min_expected_score_guess(choices, possibilities, priors)
 
-                    # computed_guess = max_info_gain_guess(choices, possibilities, priors)
+                    computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
-                    computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
+                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
 
                     # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
 
