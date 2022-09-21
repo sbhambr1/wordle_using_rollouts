@@ -273,7 +273,7 @@ if __name__ == "__main__":
             priors=None,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=True,
+            hard_mode=False,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,
