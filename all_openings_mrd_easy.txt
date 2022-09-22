@@ -1,0 +1,57 @@
+salet
+[0, 79, 1173, 1014, 48, 1] 7979 3.4466522678185747 0 0
+Failure case guesses: 
+{}
+reast
+[0, 68, 1192, 1006, 49] 7981 3.4475161987041036 0 0
+Failure case guesses: 
+{}
+crate
+[1, 82, 1171, 1008, 53] 7975 3.4449244060475164 0 0
+Failure case guesses: 
+{}
+trace
+[1, 74, 1191, 995, 54] 7972 3.4436285097192223 0 0
+Failure case guesses: 
+{}
+slate
+[1, 66, 1191, 1006, 50, 1] 7986 3.4496760259179267 0 0
+Failure case guesses: 
+{}
+trape
+[0, 71, 1135, 1060, 47, 2] 8034 3.4704103671706266 0 0
+Failure case guesses: 
+{}
+slane
+[0, 64, 1179, 1033, 39] 7992 3.452267818574514 0 0
+Failure case guesses: 
+{}
+prate
+[0, 74, 1139, 1053, 47, 2] 8024 3.4660907127429805 0 0
+Failure case guesses: 
+{}
+crane
+[1, 70, 1174, 1028, 42] 7985 3.449244060475162 0 0
+Failure case guesses: 
+{}
+carle
+[0, 71, 1158, 1051, 35] 7995 3.4535637149028076 0 0
+Failure case guesses: 
+{}
+train
+[1, 72, 1149, 1048, 45] 8009 3.459611231101512 0 0
+Failure case guesses: 
+{}
+raise
+[1, 56, 1118, 1078, 62] 8089 3.494168466522678 0 0
+Failure case guesses: 
+{}
+clout
+[1, 50, 1028, 1157, 79] 8208 3.545572354211663 0 0
+Failure case guesses: 
+{}
+nymph
+[1, 34, 727, 1408, 144, 1] 8608 3.7183585313174947 0 0
+Failure case guesses: 
+{}
+--- 27426.75391817093 seconds ---

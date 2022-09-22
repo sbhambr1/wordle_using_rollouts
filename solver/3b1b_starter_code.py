@@ -158,7 +158,7 @@ def simulate_games(first_guess=None,
                     results = one_step_lookahead_minimization(guess_words=choices,
                                                                     mystery_words=possibilities,
                                                                     priors=priors,
-                                                                    heuristic='max_info_gain', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                                                                    heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
                                                                     top_picks=rollout_top_k,
                                                                     pattern=pattern,
                                                                     hard_mode=hard_mode,
@@ -232,30 +232,6 @@ def simulate_games(first_guess=None,
 
 if __name__ == "__main__":
     start_time = time.time()
-    
-    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse"]
-    # first_guesses = ["salet"]
-
-    # top 100 words found using max entropy heuristic for opening the game.
-
-    # first_guesses = ['soare', 'roate', 'raise', 'raile', 'reast', 'slate', 'crate', 'salet', 'irate', 'trace', 
-    #                 'arise', 'orate', 'stare', 'carte', 'raine', 'caret', 'ariel', 'taler', 'carle', 'slane', 
-    #                 'snare', 'artel', 'arose', 'strae', 'carse', 'saine', 'earst', 'taser', 'least', 'alert', 
-    #                 'crane', 'tares', 'seral', 'stale', 'saner', 'ratel', 'torse', 'tears', 'resat', 'alter', 
-    #                 'later', 'prate', 'trine', 'react', 'saice', 'toile', 'earnt', 'trone', 'leant', 'liane', 
-    #                 'trade', 'antre', 'reist', 'coate', 'sorel', 'urate', 'slier', 'teras', 'stane', 'learn', 
-    #                 'trape', 'peart', 'rates', 'paire', 'cater', 'stear', 'roast', 'setal', 'stire', 'teals', 
-    #                 'aline', 'aisle', 'trice', 'reals', 'arles', 'toise', 'scare', 'parse', 'lares', 'oater', 
-    #                 'realo', 'slart', 'laser', 'arets', 'roset', 'aesir', 'saute', 'tries', 'parle', 'rance', 
-    #                 'litre', 'tales', 'heart', 'alone', 'prase', 'store', 'alien', 'share', 'ronte', 'rales']
-
-    # first_guesses = ['soare', 'roate', 'raise'] # for building the approximation curve
-
-    # first_guesses = ['scamp', 'scowl'] # for checking the starting words from Laurent's blog
-
-    # first_guesses = ["salet", "soare", "trace", "slate", "crane", "dealt", "carse", "scamp", "scowl"]
-
-    # first_guesses = ["dealt", "carse", "scamp", "scowl"]
 
     # first_guesses = ["salet", "soare"] #testing
 
