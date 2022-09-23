@@ -1,6 +1,6 @@
 import random
 
-random.seed(0)
+random.seed(10)
 
 def get_words(filename):
     '''Reads a file and returns a list of words.'''
@@ -37,8 +37,8 @@ def check_modified_words(guess_words, mystery_words):
     return count
 
 def main():
-    guess_words = get_words('data/allowed_words.txt')
-    mystery_words = get_words('data/possible_words.txt')
+    guess_words = get_words('data/modified_guess_words_6letter.txt')
+    mystery_words = get_words('data/modified_mystery_words_6letter.txt')
     hashmap = flag_guess_words(guess_words, mystery_words)
 
     modified_guess_words = []
@@ -51,8 +51,8 @@ def main():
         if hashmap[word]:
             modified_mystery_words.append(str(modified_word))
     
-    save_words('data/modified_guess_words.txt', modified_guess_words)
-    save_words('data/modified_mystery_words.txt', modified_mystery_words)
+    save_words('data/modified_guess_words_7letter.txt', modified_guess_words)
+    save_words('data/modified_mystery_words_7letter.txt', modified_mystery_words)
 
     print(check_modified_words(modified_guess_words, modified_mystery_words))
 
