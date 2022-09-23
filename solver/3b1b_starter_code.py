@@ -235,8 +235,10 @@ if __name__ == "__main__":
 
     # first_guesses = ["salet", "soare"] #testing
 
-    first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
-                    'raise', 'clout', 'nymph'] #existing works
+    # first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
+    #                 'raise', 'clout', 'nymph'] #existing works
+
+    first_guesses = ['saletn', 'soarem']
 
     saving_results_to_csv = False
 
@@ -249,7 +251,7 @@ if __name__ == "__main__":
             priors=None,
             rollout_begin_at=2,
             rollout_top_k=10,
-            hard_mode=False,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,
