@@ -16,8 +16,10 @@ DATA_DIR = os.path.join(
 
 # SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
 # LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
-SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "modified_mystery_words.txt")
-LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "modified_guess_words.txt")
+
+SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "modified_mystery_words_7letter.txt")
+LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "modified_guess_words_7letter.txt")
+
 WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_frequencies.txt")
 WORD_FREQ_MAP_FILE = os.path.join(DATA_DIR, "freq_map.json")
 SECOND_GUESS_MAP_FILE = os.path.join(DATA_DIR, "second_guess_map.json")
