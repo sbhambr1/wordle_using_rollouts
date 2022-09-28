@@ -159,3 +159,12 @@ def get_word_buckets(guess, possible_words): # important function
     for index, word in zip(hashes, possible_words):
         buckets[index].append(word)
     return buckets
+
+def main():
+    # guess_words_list = get_word_list(short=False)
+    # mystery_words_list = get_word_list(short=True)
+    # generate_pattern_matrix(guess_words_list, mystery_words_list)
+    generate_full_pattern_matrix()
+
+if __name__ == '__main__':
+    main()

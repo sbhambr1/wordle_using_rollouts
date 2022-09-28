@@ -29,7 +29,7 @@ def get_pattern_distributions(allowed_words, possible_words, weights):
     pattern_matrix = get_pattern_matrix(allowed_words, possible_words)
 
     n = len(allowed_words)
-    distributions = np.zeros((n, 3**5))
+    distributions = np.zeros((n, 3**len(allowed_words[0])))
     n_range = np.arange(n)
     for j, prob in enumerate(weights):
         distributions[n_range, pattern_matrix[:, j]] += prob
