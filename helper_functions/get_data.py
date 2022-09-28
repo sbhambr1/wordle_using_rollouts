@@ -13,12 +13,13 @@ DATA_DIR = os.path.join(
     os.path.dirname(os.path.realpath("__init__.py")),
     "data",
 )
+#uncomment for 5 letter game
+SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
+LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
 
-# SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
-# LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
-
-SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_mystery_words_6letter.txt")
-LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_guess_words_6letter.txt")
+#uncomment for 6 letter game
+# SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_mystery_words_6letter.txt")
+# LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_guess_words_6letter.txt")
 
 WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_frequencies.txt")
 WORD_FREQ_MAP_FILE = os.path.join(DATA_DIR, "freq_map.json")
