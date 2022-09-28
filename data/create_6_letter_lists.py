@@ -22,8 +22,9 @@ def get_guess_words_list(source_list):
     count = 12972
     guess_words_list = []
     
-    while len(guess_words_list)!=count and random.choice(source_list) not in guess_words_list:
-        guess_words_list.append(random.choice(source_list))
+    while len(guess_words_list)!=count:
+        if random.choice(source_list) not in guess_words_list:
+            guess_words_list.append(random.choice(source_list))
 
     return guess_words_list
 
@@ -33,8 +34,9 @@ def get_mystery_words_list(guess_words_list):
     count = 2315
     mystery_words_list = []
     
-    while len(mystery_words_list)!=count and random.choice(guess_words_list) not in mystery_words_list:
-        mystery_words_list.append(random.choice(guess_words_list))
+    while len(mystery_words_list)!=count:
+        if random.choice(guess_words_list) not in mystery_words_list:
+            mystery_words_list.append(random.choice(guess_words_list))
 
     return mystery_words_list
 

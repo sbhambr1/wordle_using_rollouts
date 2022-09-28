@@ -14,17 +14,20 @@ DATA_DIR = os.path.join(
     "data",
 )
 #uncomment for 5 letter game
-SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
-LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
+# SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "possible_words.txt")
+# LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
 
-#uncomment for 6 letter game
-# SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_mystery_words_6letter.txt")
-# LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_guess_words_6letter.txt")
+#uncomment for 6 letter game and rename pattern_matrix file
+SHORT_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_mystery_words_6letter.txt")
+LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "actual_guess_words_6letter.txt")
 
 WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_frequencies.txt")
 WORD_FREQ_MAP_FILE = os.path.join(DATA_DIR, "freq_map.json")
 SECOND_GUESS_MAP_FILE = os.path.join(DATA_DIR, "second_guess_map.json")
-PATTERN_MATRIX_FILE = os.path.join(DATA_DIR, "pattern_matrix.npy")
+
+#change suffix for n-letter game
+PATTERN_MATRIX_FILE = os.path.join(DATA_DIR, "pattern_matrix_6.npy")
+
 ENT_SCORE_PAIRS_FILE = os.path.join(DATA_DIR, "ent_score_pairs.json")
 
 
