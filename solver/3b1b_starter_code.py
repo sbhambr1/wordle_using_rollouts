@@ -70,7 +70,7 @@ def simulate_games(first_guess=None,
         priors = get_true_wordle_prior()
 
     if test_set is None:
-        test_set = short_word_list  ## set test set as actual Wordle answer mystery list
+        test_set = short_word_list[551:552]  ## set test set as actual Wordle answer mystery list
 
     if shuffle:
         print("shuffled")

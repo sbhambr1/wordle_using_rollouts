@@ -422,29 +422,31 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             score = -5
         else:
             score = 1
-        while guess != mystery_word:
-            possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), possibilities)
-            if len(possibilities)==1:
-                guess = mystery_word
-                continue
-            
-            guesses.append(guess)
-            patterns.append(get_pattern(guess, mystery_word))
-            next_guesses = prune_allowed_words(guess_words, possibilities)
-            if hard_mode:
-                for guess, pattern in zip(guesses, patterns):
-                    next_guesses = get_possible_words(guess, pattern, next_guesses)
-            if heuristic == 'min_expected_scores':
-                guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
-            elif heuristic == 'max_info_gain':
-                guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
-            elif heuristic == 'most_rapid_decrease':
-                guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
-            elif heuristic == 'greatest_exp_prob':
-                guess = greatest_exp_prob_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
-            else:
-                raise ValueError(f"Unknown heuristic: {heuristic}")
-            score += 1 
+            while guess != mystery_word:
+                possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), possibilities)
+                # if guess in possibilities:
+                #     possibilities.remove(guess)
+                if len(possibilities)==1:
+                    guess = mystery_word
+                    continue
+                
+                guesses.append(guess)
+                patterns.append(get_pattern(guess, mystery_word))
+                next_guesses = prune_allowed_words(guess_words, possibilities)
+                if hard_mode:
+                    for guess, pattern in zip(guesses, patterns):
+                        next_guesses = get_possible_words(guess, pattern, next_guesses)
+                if heuristic == 'min_expected_scores':
+                    guess = min_expected_score_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+                elif heuristic == 'max_info_gain':
+                    guess = max_info_gain_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+                elif heuristic == 'most_rapid_decrease':
+                    guess = most_rapid_decrease_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+                elif heuristic == 'greatest_exp_prob':
+                    guess = greatest_exp_prob_guess(allowed_words=next_guesses, possible_words=possibilities, priors=priors)
+                else:
+                    raise ValueError(f"Unknown heuristic: {heuristic}")
+                score += 1 
         q_factors.append(score)
 
     return np.sum(q_factors)/len(mystery_words)
