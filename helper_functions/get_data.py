@@ -24,7 +24,7 @@ LONG_WORD_LIST_FILE = os.path.join(DATA_DIR, "allowed_words.txt")
 WORD_FREQ_FILE = os.path.join(DATA_DIR, "wordle_words_frequencies.txt")
 WORD_FREQ_MAP_FILE = os.path.join(DATA_DIR, "freq_map.json")
 SECOND_GUESS_MAP_FILE = os.path.join(DATA_DIR, "second_guess_map.json")
-PATTERN_MATRIX_FILE = os.path.join(DATA_DIR, "pattern_matrix.npy")
+PATTERN_MATRIX_FILE = os.path.join(DATA_DIR, "pattern_matrix_5.npy")
 ENT_SCORE_PAIRS_FILE = os.path.join(DATA_DIR, "ent_score_pairs.json")
 
 
