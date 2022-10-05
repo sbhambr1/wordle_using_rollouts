@@ -6,4 +6,4 @@ code and scripts to solve wordle using rollout with a suite of different heurist
 
 **Run**: solver/3b1b_starter_code.py
 
-*Note*: Dont push data/pattern_matrix.npy after running the code.
+*Note*: Please download the pattern_matrix_5.npy file and paste in the \data directory from here: https://www.dropbox.com/t/AqH4dmDF4iZBidJk.
