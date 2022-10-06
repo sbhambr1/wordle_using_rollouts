@@ -242,9 +242,10 @@ def greatest_exp_prob_guess(allowed_words, possible_words, priors):
     for word in allowed_words:
         bucket_count = 0
         buckets = get_word_buckets(word, possible_words)
-        for bucket in buckets:
-            if bucket != []:
-                bucket_count += 1
+        # for bucket in buckets:
+        #     if bucket != []:
+        #         bucket_count += 1
+        bucket_count = sum([1 for bucket in buckets if bucket])
         bucket_counts.append(bucket_count)
     min_score = np.sort(bucket_counts)[0]
     min_bucket_counts_indices = np.where(bucket_counts == min_score)[0]
