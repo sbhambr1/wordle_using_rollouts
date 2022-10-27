@@ -1,0 +1,46 @@
+asttokens @ file:///opt/conda/conda-bld/asttokens_1646925590279/work
+backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
+certifi==2022.5.18.1
+colour==0.1.5
+cycler==0.11.0
+debugpy @ file:///tmp/build/80754af9/debugpy_1637091796427/work
+decorator @ file:///opt/conda/conda-bld/decorator_1643638310831/work
+entrypoints @ file:///tmp/build/80754af9/entrypoints_1649926445639/work
+executing @ file:///opt/conda/conda-bld/executing_1646925071911/work
+fonttools==4.33.3
+ipykernel @ file:///tmp/build/80754af9/ipykernel_1646982648551/work/dist/ipykernel-6.9.1-py3-none-any.whl
+ipython @ file:///opt/conda/conda-bld/ipython_1651600145335/work
+jedi @ file:///tmp/build/80754af9/jedi_1644315233700/work
+jupyter-client @ file:///opt/conda/conda-bld/jupyter_client_1650622202839/work
+jupyter-core @ file:///opt/conda/conda-bld/jupyter_core_1651671229925/work
+kiwisolver==1.4.2
+manimlib==0.2.0
+matplotlib==3.5.2
+matplotlib-inline @ file:///tmp/build/80754af9/matplotlib-inline_1628242447089/work
+nest-asyncio @ file:///tmp/build/80754af9/nest-asyncio_1649847908682/work
+numpy==1.22.3
+opencv-python==4.5.5.64
+packaging==21.3
+pandas==1.4.2
+parso @ file:///opt/conda/conda-bld/parso_1641458642106/work
+pexpect @ file:///tmp/build/80754af9/pexpect_1605563209008/work
+pickleshare @ file:///tmp/build/80754af9/pickleshare_1606932040724/work
+Pillow==9.0.1
+progressbar==2.5
+prompt-toolkit @ file:///tmp/build/80754af9/prompt-toolkit_1633440160888/work
+ptyprocess @ file:///tmp/build/80754af9/ptyprocess_1609355006118/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
+pure-eval @ file:///opt/conda/conda-bld/pure_eval_1646925070566/work
+pycairo==1.21.0
+pydub==0.25.1
+Pygments @ file:///opt/conda/conda-bld/pygments_1644249106324/work
+pyparsing==3.0.9
+python-dateutil @ file:///tmp/build/80754af9/python-dateutil_1626374649649/work
+pytz==2022.1
+pyzmq @ file:///tmp/build/80754af9/pyzmq_1638436375034/work
+scipy==1.8.0
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+stack-data @ file:///opt/conda/conda-bld/stack_data_1646927590127/work
+tornado @ file:///tmp/build/80754af9/tornado_1606942300299/work
+tqdm==4.63.1
+traitlets @ file:///tmp/build/80754af9/traitlets_1636710298902/work
+wcwidth @ file:///Users/ktietz/demo/mc3/conda-bld/wcwidth_1629357192024/work

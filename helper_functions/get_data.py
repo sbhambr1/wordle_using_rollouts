@@ -43,7 +43,6 @@ def get_word_list(short=False):
         result.extend([word.strip() for word in fp.readlines()])
     return result
 
-
 def get_word_frequencies(regenerate=False):
     if os.path.exists(WORD_FREQ_MAP_FILE) or regenerate:
         with open(WORD_FREQ_MAP_FILE) as fp:
@@ -63,7 +62,6 @@ def get_word_frequencies(regenerate=False):
     with open(WORD_FREQ_MAP_FILE, 'w') as fp:
         json.dump(freq_map, fp)
     return freq_map
-
 
 def get_frequency_based_priors(n_common=3000, width_under_sigmoid=10):
     """
@@ -90,7 +88,6 @@ def get_frequency_based_priors(n_common=3000, width_under_sigmoid=10):
     for word, x in zip(sorted_words, xs):
         priors[word] = sigmoid(x)
     return priors
-
 
 def get_true_wordle_prior():
     words = get_word_list()

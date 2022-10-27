@@ -18,7 +18,7 @@ def get_weights(words, priors):
 def get_pattern_distributions(allowed_words, possible_words, weights):
     """
     For each possible guess in allowed_words, this finds the probability
-    distribution across all of the 3^5 wordle patterns you could see, assuming
+    distribution across all of the 3^6 wordle patterns you could see, assuming
     the possible answers are in possible_words with associated probabilities
     in weights.
 
@@ -66,7 +66,7 @@ def words_to_max_buckets(possible_words, weights):
 
 def get_bucket_sizes(allowed_words, possible_words):
     """
-    Returns a (len(allowed_words), 243) shape array reprenting the size of
+    Returns a (len(allowed_words), 729) shape array reprenting the size of
     word buckets associated with each guess in allowed_words
     """
     weights = np.ones(len(possible_words))
@@ -87,6 +87,6 @@ def prune_allowed_words(allowed_words, possible_words):
     """
     chars = set()
     for word in possible_words:
-        letters = [word[i] for i in range(5)]
+        letters = [word[i] for i in range(len(allowed_words[0]))]
         chars.update(letters)
     return [word for word in allowed_words if any(c in word for c in chars)]

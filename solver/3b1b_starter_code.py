@@ -70,7 +70,7 @@ def simulate_games(first_guess=None,
         priors = get_true_wordle_prior()
 
     if test_set is None:
-        test_set = short_word_list[551:552]  ## set test set as actual Wordle answer mystery list
+        test_set = short_word_list ## set test set as actual Wordle answer mystery list
 
     if shuffle:
         print("shuffled")
@@ -186,8 +186,7 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
-                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
-
+                    # computed_guess = most Trying all wordle answers:  12%|█████████████████████████████▍                                                                                                                                                                                                                     | 280/2315 [00:39<12:25,  2.73it/s]
                     # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
 
                     guess=computed_guess
@@ -240,7 +239,9 @@ if __name__ == "__main__":
 
     # first_guesses = ['saletnf', 'soaremx']
 
-    first_guesses = ['scarfe', 'angelo']
+    first_guesses = ['angelo']
+    first_guesses = ['scambi']
+    first_guesses = ['sauber', 'scyros']
 
     saving_results_to_csv = False
 
@@ -252,7 +253,7 @@ if __name__ == "__main__":
             first_guess=first_guess,
             priors=None,
             rollout_begin_at=2,
-            rollout_top_k=10,
+            rollout_top_k=9,
             hard_mode=True,
             test_mode=False,
             track_failures=True,

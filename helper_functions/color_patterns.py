@@ -6,6 +6,7 @@ import numpy as np
 from manimlib import *
 
 from helper_functions.get_data import *
+# from get_data import *
 
 MISS = np.uint8(0)
 MISPLACED = np.uint8(1)
@@ -51,7 +52,7 @@ def generate_pattern_matrix(words1, words2): # important function
     for i, j in it.product(range(nl), range(nl)):
         equality_grid[:, :, i, j] = np.equal.outer(word_arr1[:, i], word_arr2[:, j])
 
-    # full_pattern_matrix[a, b] should represent the 5-color pattern
+    # full_pattern_matrix[a, b] should represent the 6-color pattern
     # for guess a and answer b, with 0 -> grey, 1 -> yellow, 2 -> green
     full_pattern_matrix = np.zeros((nw1, nw2, nl), dtype=np.uint8)
 
@@ -133,7 +134,7 @@ def pattern_from_string(pattern_string):
 def pattern_to_int_list(pattern):
     result = []
     curr = pattern
-    for x in range(5):
+    for x in range(5): # HERE
         result.append(curr % 3)
         curr = curr // 3
     return result
@@ -154,7 +155,7 @@ def get_possible_words(guess, pattern, word_list): # important function
 
 
 def get_word_buckets(guess, possible_words): # important function
-    buckets = [[] for x in range(3**5)]
+    buckets = [[] for x in range(3**6)] # HERE
     hashes = get_pattern_matrix([guess], possible_words).flatten()
     for index, word in zip(hashes, possible_words):
         buckets[index].append(word)
