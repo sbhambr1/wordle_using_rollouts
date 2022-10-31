@@ -239,9 +239,12 @@ if __name__ == "__main__":
 
     # first_guesses = ['saletnf', 'soaremx']
 
-    first_guesses = ['angelo']
-    first_guesses = ['scambi']
-    first_guesses = ['sauber', 'scyros']
+    first_guesses = ['angelo'] # 1542 games
+    first_guesses = ['sauber'] # 366 games solved
+    first_guesses = ['ambros'] # all games
+    first_guesses = ['porins'] # 335 games
+    first_guesses = ['rabies'] # 866 games
+    first_guesses = ['snared'] # 389 games
 
     saving_results_to_csv = False
 
