@@ -155,19 +155,19 @@ def simulate_games(first_guess=None,
                         for guess, pattern in zip(guesses, patterns):
                             choices = get_possible_words(guess, pattern, choices)
 
-                    results = one_step_lookahead_minimization(guess_words=choices,
-                                                                    mystery_words=possibilities,
-                                                                    priors=priors,
-                                                                    heuristic='max_info_gain', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
-                                                                    top_picks=rollout_top_k,
-                                                                    pattern=pattern,
-                                                                    hard_mode=hard_mode,
-                                                                    num_times_word_in_top_k=0,
-                                                                    num_times_word_finally_selected=0)
+                    # results = one_step_lookahead_minimization(guess_words=choices,
+                    #                                                 mystery_words=possibilities,
+                    #                                                 priors=priors,
+                    #                                                 heuristic='max_info_gain', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                    #                                                 top_picks=rollout_top_k,
+                    #                                                 pattern=pattern,
+                    #                                                 hard_mode=hard_mode,
+                    #                                                 num_times_word_in_top_k=0,
+                    #                                                 num_times_word_finally_selected=0)
                     
-                    computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
-                    num_times_word_in_top_k += top_k_counter
-                    num_times_word_finally_selected += final_selection_counter
+                    # computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
+                    # num_times_word_in_top_k += top_k_counter
+                    # num_times_word_finally_selected += final_selection_counter
 
                     # computed_guess = brute_force_optimal_guess(
                     # choices, possibilities, priors,
@@ -184,7 +184,7 @@ def simulate_games(first_guess=None,
 
                     # computed_guess = min_expected_score_guess(choices, possibilities, priors)
 
-                    # computed_guess = max_info_gain_guess(choices, possibilities, priors)
+                    computed_guess = max_info_gain_guess(choices, possibilities, priors)
 
                     # computed_guess = most Trying all wordle answers:  12%|█████████████████████████████▍                                                                                                                                                                                                                     | 280/2315 [00:39<12:25,  2.73it/s]
                     # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
@@ -242,9 +242,14 @@ if __name__ == "__main__":
     first_guesses = ['angelo'] # 1542 games
     first_guesses = ['sauber'] # 366 games solved
     first_guesses = ['ambros'] # all games
-    first_guesses = ['porins'] # 335 games
-    first_guesses = ['rabies'] # 866 games
-    first_guesses = ['snared'] # 389 games
+    first_guesses = ['porins'] # all games
+    first_guesses = ['rabies'] # all games
+    first_guesses = ['snared'] # 700 games
+    first_guesses = ['inhale'] # 1257 games
+    first_guesses = ['tances'] # all games
+    first_guesses = ['stroma'] # 1436 games
+
+    first_guesses = ['ambros', 'porins', 'rabies', 'tances']
 
     saving_results_to_csv = False
 

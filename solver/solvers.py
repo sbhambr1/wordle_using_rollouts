@@ -451,8 +451,8 @@ def get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pat
             score = 1
             while guess != mystery_word:
                 possibilities = get_possible_words(guess, get_pattern(guess, mystery_word), possibilities)
-                # if guess in possibilities:
-                #     possibilities.remove(guess)
+                if guess in possibilities:
+                    possibilities.remove(guess)
                 if len(possibilities)==1:
                     guess = mystery_word
                     continue

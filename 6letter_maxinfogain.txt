@@ -1,0 +1,17 @@
+ambros
+[1, 79, 1462, 765, 8] 7645 3.302375809935205 0 0
+Failure case guesses: 
+{}
+porins
+[1, 74, 1629, 608, 3] 7483 3.2323974082073432 0 0
+Failure case guesses: 
+{}
+rabies
+[1, 79, 1631, 598, 4, 2] 7476 3.2293736501079913 0 0
+Failure case guesses: 
+{}
+tances
+[1, 74, 1709, 528, 3] 7403 3.197840172786177 0 0
+Failure case guesses: 
+{}
+--- 125.29266142845154 seconds ---

@@ -134,7 +134,7 @@ def pattern_from_string(pattern_string):
 def pattern_to_int_list(pattern):
     result = []
     curr = pattern
-    for x in range(5): # HERE
+    for x in range(6): # HERE
         result.append(curr % 3)
         curr = curr // 3
     return result

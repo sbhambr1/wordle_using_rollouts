@@ -3,3 +3,21 @@ ambros
 Failure case guesses: 
 {}
 --- 643.3513000011444 seconds ---
+
+porins
+[1, 183, 1637, 489, 5] 7259 3.135637149028078 3032 1292                                            
+Failure case guesses: 
+{}
+--- 334.5681686401367 seconds ---
+
+rabies
+[1, 189, 1649, 465, 11] 7241 3.127861771058315 3042 1154
+Failure case guesses: 
+{}
+--- 190.49859237670898 seconds ---
+
+tances
+[1, 192, 1695, 419, 8] 7186 3.1041036717062633 2960 1367
+Failure case guesses: 
+{}
+--- 196.29326701164246 seconds ---
