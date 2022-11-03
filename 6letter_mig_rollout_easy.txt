@@ -1,0 +1,5 @@
+ambros
+[1, 120, 1700, 487, 7] 7324 3.1637149028077753 1972 2269
+Failure case guesses: 
+{}
+porins
