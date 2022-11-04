@@ -227,7 +227,7 @@ def most_rapid_decrease_guess(allowed_words, possible_words, priors):
             return allowed_words[i]
     return allowed_words[min_bucket_sums_indices[0]]
 
-def gep_parallel(word, possible_words):
+def gep_parallel_naive(word, possible_words):
     ans_probabilities = []
     for answer in possible_words:
         possibilities = len(get_possible_words(word, get_pattern(word, answer), possible_words))
@@ -246,26 +246,32 @@ def greatest_exp_prob_guess_naive(allowed_words, possible_words, priors):
     #         probability = 1 / possibilities
     #         ans_probabilities.append(probability/len(possible_words))
     #     next_ans_probabilities.append(np.sum(ans_probabilities))
-    next_ans_probabilities = Parallel(n_jobs=2)(delayed(gep_parallel)(word, possible_words) for word in allowed_words)
+    next_ans_probabilities = Parallel(n_jobs=2)(delayed(gep_parallel_naive)(word, possible_words) for word in allowed_words)
     max_prob = np.sort(next_ans_probabilities)[-1]
     max_prob_indices = np.where(next_ans_probabilities == max_prob)[0]
     for i in max_prob_indices:
         if allowed_words[i] in possible_words:
             return allowed_words[i]
     return allowed_words[max_prob_indices[0]]
+
+def gep_parallel(word, possible_words):
+    buckets = get_word_buckets(word, possible_words)
+    bucket_count = sum([1 for bucket in buckets if bucket])
+    return bucket_count
     
 def greatest_exp_prob_guess(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
     bucket_counts = []
-    for word in allowed_words:
-        bucket_count = 0
-        buckets = get_word_buckets(word, possible_words)
-        # for bucket in buckets:
-        #     if bucket != []:
-        #         bucket_count += 1
-        bucket_count = sum([1 for bucket in buckets if bucket])
-        bucket_counts.append(bucket_count)
+    # for word in allowed_words:
+    #     bucket_count = 0
+    #     buckets = get_word_buckets(word, possible_words)
+    #     # for bucket in buckets:
+    #     #     if bucket != []:
+    #     #         bucket_count += 1
+    #     bucket_count = sum([1 for bucket in buckets if bucket])
+    #     bucket_counts.append(bucket_count)
+    bucket_counts = Parallel(n_jobs=2)(delayed(gep_parallel)(word, possible_words) for word in allowed_words)
     min_score = np.sort(bucket_counts)[0]
     min_bucket_counts_indices = np.where(bucket_counts == min_score)[0]
     for i in min_bucket_counts_indices:
