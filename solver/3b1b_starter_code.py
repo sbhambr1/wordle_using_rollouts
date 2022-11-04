@@ -158,7 +158,7 @@ def simulate_games(first_guess=None,
                     results = one_step_lookahead_minimization(guess_words=choices,
                                                                     mystery_words=possibilities,
                                                                     priors=priors,
-                                                                    heuristic='most_rapid_decrease', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                                                                    heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
                                                                     top_picks=rollout_top_k,
                                                                     pattern=pattern,
                                                                     hard_mode=hard_mode,
@@ -233,10 +233,14 @@ def simulate_games(first_guess=None,
 if __name__ == "__main__":
     start_time = time.time()
 
-    first_guesses = ["salet", "soare"] #testing
+    # first_guesses = ["salet", "soare"] #testing
 
-    # first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
-    #                 'raise', 'clout', 'nymph'] #existing works
+    first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
+                    'raise', 'clout', 'nymph'] #existing works
+    
+    first_guesses = ['prate', 'crane', 'carle', 'train', 'raise', 'clout', 'nymph']
+
+    first_guesses = ['nymph']
 
     # first_guesses = ['saletnf', 'soaremx']
 
