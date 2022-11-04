@@ -26,6 +26,146 @@ from solver.solvers import *
 
 warnings.filterwarnings("ignore")
 
+def solve_games_in_parallel(answer, all_words, priors, exclude_seen_words, seen, rollout_begin_at, hard_mode, rollout_top_k, track_failures, tracking_dict, num_times_word_in_top_k, num_times_word_finally_selected, 
+                            scores, game_results, mystery_list_lengths, brute_force_optimize, look_two_ahead, purely_maximize_information, optimize_using_lower_bound, use_approximation_curve):
+
+    def get_next_guess(guesses, patterns, possibilities, pattern):
+        phash = "".join(
+            str(g) + "".join(map(str, pattern_to_int_list(p)))
+            for g, p in zip(guesses, patterns) 
+        ) 
+        
+        choices = prune_allowed_words(all_words, possibilities)
+        
+        ## replacing next_guess_map[phash] with computed_guess
+        if hard_mode:
+            for guess, pattern in zip(guesses, patterns):
+                choices = get_possible_words(guess, pattern, choices)
+        if brute_force_optimize:
+            computed_guess = brute_force_optimal_guess(
+                choices, possibilities, priors,
+                n_top_picks=rollout_top_k,
+            )
+            guess=computed_guess
+        else:
+            computed_guess = optimal_guess(
+                choices, possibilities, priors, pattern,
+                look_two_ahead=look_two_ahead,
+                look_three_ahead=False,
+                purely_maximize_information=purely_maximize_information,
+                optimize_using_lower_bound=optimize_using_lower_bound,
+                use_approximation_curve=use_approximation_curve
+            )
+            guess=computed_guess
+        return guess
+        
+    guesses = []
+    patterns = []
+    possibility_counts = []
+    possibilities = list(filter(lambda w: priors[w] > 0, all_words))  ## here you are defining the priors over possible answers
+
+    if exclude_seen_words:
+        possibilities = list(filter(lambda w: w not in seen, possibilities))
+    # answer = "bound" ##checking
+    possibility_counts.append(len(possibilities))
+    score = 1
+    guess = first_guess
+    while guess != answer:
+        pattern = get_pattern(guess, answer)
+        guesses.append(guess)
+        patterns.append(pattern)
+        possibilities = get_possible_words(guess, pattern, possibilities)
+        possibility_counts.append(len(possibilities))
+        score += 1
+        if len(possibilities) == 1:
+            guess = possibilities[0]
+        else:
+            if score >= rollout_begin_at:
+                # do bruteforce optimization
+                phash = "".join(
+                str(g) + "".join(map(str, pattern_to_int_list(p)))
+                for g, p in zip(guesses, patterns))
+                
+                # if phash not in next_guess_map:
+                choices = prune_allowed_words(all_words, possibilities)
+                
+                if hard_mode:
+                    for guess, pattern in zip(guesses, patterns):
+                        choices = get_possible_words(guess, pattern, choices)
+
+                results = one_step_lookahead_minimization(guess_words=choices,
+                                                                mystery_words=possibilities,
+                                                                priors=priors,
+                                                                heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                                                                top_picks=rollout_top_k,
+                                                                pattern=pattern,
+                                                                hard_mode=hard_mode,
+                                                                num_times_word_in_top_k=0,
+                                                                num_times_word_finally_selected=0)
+                
+                computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
+                num_times_word_in_top_k += top_k_counter
+                num_times_word_finally_selected += final_selection_counter
+
+                # computed_guess = brute_force_optimal_guess(
+                # choices, possibilities, priors,
+                # n_top_picks=rollout_top_k, 
+                # pattern=pattern,
+                # super_heuristic=super_heuristic,
+                # optimize_using_lower_bound=optimize_using_lower_bound,
+                # purely_maximize_information=purely_maximize_information,
+                # use_approximation_curve=use_approximation_curve,
+                # expected_scores_heuristic=expected_scores_heuristic,
+                # hard_mode=hard_mode)
+
+                # Experiments for using ONLY base heuristics.
+
+                # computed_guess = min_expected_score_guess(choices, possibilities, priors)
+
+                # computed_guess = max_info_gain_guess(choices, possibilities, priors)
+
+                # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
+
+                # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
+
+                guess=computed_guess
+                # guess = next_guess_map[phash]
+            else:
+                computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
+                guess=computed_guess
+    guesses.append(guess)
+
+    if track_failures:
+        if score>6:
+            tracking_dict[answer] = guesses
+
+    scores = np.append(scores, [score])
+    total_guesses = scores.sum()
+    average = scores.mean()
+    seen.add(answer)
+    
+    # game_results.append(dict(
+    #     score=int(score),
+    #     answer=answer,
+    #     guesses=guesses,
+    #     patterns=list(map(int, patterns)),
+    #     reductions=possibility_counts,
+    # ))
+
+    # mystery_list_lengths.append(possibility_counts)
+
+    # final_result = dict(
+    #     score_distribution=score_dist,
+    #     total_guesses=int(total_guesses),
+    #     average_score=float(scores.mean()),
+    #     # game_results=game_results,
+    #     mystery_list_lengths=mystery_list_lengths,
+    # )
+
+    total_guesses = int(total_guesses)
+
+    return total_guesses
+
 # Run simulated wordle games
 
 def simulate_games(first_guess=None,
@@ -82,36 +222,6 @@ def simulate_games(first_guess=None,
     # and reuse results that are seen multiple times in the sim
     next_guess_map = {}
 
-    def get_next_guess(guesses, patterns, possibilities, pattern):
-        phash = "".join(
-            str(g) + "".join(map(str, pattern_to_int_list(p)))
-            for g, p in zip(guesses, patterns) 
-        ) 
-        
-        choices = prune_allowed_words(all_words, possibilities)
-        
-        ## replacing next_guess_map[phash] with computed_guess
-        if hard_mode:
-            for guess, pattern in zip(guesses, patterns):
-                choices = get_possible_words(guess, pattern, choices)
-        if brute_force_optimize:
-            computed_guess = brute_force_optimal_guess(
-                choices, possibilities, priors,
-                n_top_picks=rollout_top_k,
-            )
-            guess=computed_guess
-        else:
-            computed_guess = optimal_guess(
-                choices, possibilities, priors, pattern,
-                look_two_ahead=look_two_ahead,
-                look_three_ahead=False,
-                purely_maximize_information=purely_maximize_information,
-                optimize_using_lower_bound=optimize_using_lower_bound,
-                use_approximation_curve=use_approximation_curve
-            )
-            guess=computed_guess
-        return guess
-
     # Go through each answer in the test set, play the game,
     # and keep track of the stats.
 
@@ -119,113 +229,26 @@ def simulate_games(first_guess=None,
     game_results = []
     mystery_list_lengths = []
     
-    for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"):
-        
-        guesses = []
-        patterns = []
-        possibility_counts = []
-        possibilities = list(filter(lambda w: priors[w] > 0, all_words))  ## here you are defining the priors over possible answers
+    results = Parallel(n_jobs=10)(delayed(solve_games_in_parallel)(answer, all_words=all_words, priors=priors, exclude_seen_words=exclude_seen_words, seen=seen, rollout_begin_at=rollout_begin_at, hard_mode=hard_mode, rollout_top_k=rollout_top_k, track_failures=track_failures, tracking_dict=tracking_dict, num_times_word_in_top_k=num_times_word_in_top_k, num_times_word_finally_selected=num_times_word_finally_selected,
+                            scores=scores, game_results=game_results, mystery_list_lengths=mystery_list_lengths, brute_force_optimize=brute_force_optimize, look_two_ahead=look_two_ahead, purely_maximize_information=purely_maximize_information, optimize_using_lower_bound=optimize_using_lower_bound, use_approximation_curve=use_approximation_curve)
+                            for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"))
 
-        if exclude_seen_words:
-            possibilities = list(filter(lambda w: w not in seen, possibilities))
-        # answer = "bound" ##checking
-        possibility_counts.append(len(possibilities))
-        score = 1
-        guess = first_guess
-        while guess != answer:
-            pattern = get_pattern(guess, answer)
-            guesses.append(guess)
-            patterns.append(pattern)
-            possibilities = get_possible_words(guess, pattern, possibilities)
-            possibility_counts.append(len(possibilities))
-            score += 1
-            if len(possibilities) == 1:
-                guess = possibilities[0]
-            else:
-                if score >= rollout_begin_at:
-                    # do bruteforce optimization
-                    phash = "".join(
-                    str(g) + "".join(map(str, pattern_to_int_list(p)))
-                    for g, p in zip(guesses, patterns))
-                    
-                    # if phash not in next_guess_map:
-                    choices = prune_allowed_words(all_words, possibilities)
-                    
-                    if hard_mode:
-                        for guess, pattern in zip(guesses, patterns):
-                            choices = get_possible_words(guess, pattern, choices)
+    # score_dist = [
+    #     int(sum((results == i)))
+    #     for i in range(1, max(results) + 1)
+    # ]
 
-                    results = one_step_lookahead_minimization(guess_words=choices,
-                                                                    mystery_words=possibilities,
-                                                                    priors=priors,
-                                                                    heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
-                                                                    top_picks=rollout_top_k,
-                                                                    pattern=pattern,
-                                                                    hard_mode=hard_mode,
-                                                                    num_times_word_in_top_k=0,
-                                                                    num_times_word_finally_selected=0)
-                    
-                    computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
-                    num_times_word_in_top_k += top_k_counter
-                    num_times_word_finally_selected += final_selection_counter
+    score_dist = [0]*max(results)
+    for i in results:
+        score_dist[i-1] += 1
 
-                    # computed_guess = brute_force_optimal_guess(
-                    # choices, possibilities, priors,
-                    # n_top_picks=rollout_top_k, 
-                    # pattern=pattern,
-                    # super_heuristic=super_heuristic,
-                    # optimize_using_lower_bound=optimize_using_lower_bound,
-                    # purely_maximize_information=purely_maximize_information,
-                    # use_approximation_curve=use_approximation_curve,
-                    # expected_scores_heuristic=expected_scores_heuristic,
-                    # hard_mode=hard_mode)
-
-                    # Experiments for using ONLY base heuristics.
-
-                    # computed_guess = min_expected_score_guess(choices, possibilities, priors)
-
-                    # computed_guess = max_info_gain_guess(choices, possibilities, priors)
-
-                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
-
-                    # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
-
-                    guess=computed_guess
-                    # guess = next_guess_map[phash]
-                else:
-                    computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
-                    guess=computed_guess
-        guesses.append(guess)
-
-        if track_failures:
-            if score>6:
-                tracking_dict[answer] = guesses
-
-        scores = np.append(scores, [score])
-        score_dist = [
-            int((scores == i).sum())
-            for i in range(1, scores.max() + 1)
-        ]
-        total_guesses = scores.sum()
-        average = scores.mean()
-        seen.add(answer)
-        
-        # game_results.append(dict(
-        #     score=int(score),
-        #     answer=answer,
-        #     guesses=guesses,
-        #     patterns=list(map(int, patterns)),
-        #     reductions=possibility_counts,
-        # ))
-
-        mystery_list_lengths.append(possibility_counts)
+    total_guesses = sum(results)
+    average_score = np.mean(results)
 
     final_result = dict(
         score_distribution=score_dist,
-        total_guesses=int(total_guesses),
-        average_score=float(scores.mean()),
-        # game_results=game_results,
-        mystery_list_lengths=mystery_list_lengths,
+        total_guesses=total_guesses,
+        average_score=average_score
     )
 
     return final_result, tracking_dict, num_times_word_in_top_k, num_times_word_finally_selected

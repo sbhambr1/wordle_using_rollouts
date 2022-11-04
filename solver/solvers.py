@@ -263,15 +263,15 @@ def greatest_exp_prob_guess(allowed_words, possible_words, priors):
     if len(possible_words) == 1:
         return possible_words[0]
     bucket_counts = []
-    # for word in allowed_words:
-    #     bucket_count = 0
-    #     buckets = get_word_buckets(word, possible_words)
-    #     # for bucket in buckets:
-    #     #     if bucket != []:
-    #     #         bucket_count += 1
-    #     bucket_count = sum([1 for bucket in buckets if bucket])
-    #     bucket_counts.append(bucket_count)
-    bucket_counts = Parallel(n_jobs=2)(delayed(gep_parallel)(word, possible_words) for word in allowed_words)
+    for word in allowed_words:
+        bucket_count = 0
+        buckets = get_word_buckets(word, possible_words)
+        # for bucket in buckets:
+        #     if bucket != []:
+        #         bucket_count += 1
+        bucket_count = sum([1 for bucket in buckets if bucket])
+        bucket_counts.append(bucket_count)
+    # bucket_counts = Parallel(n_jobs=2)(delayed(gep_parallel)(word, possible_words) for word in allowed_words)
     min_score = np.sort(bucket_counts)[0]
     min_bucket_counts_indices = np.where(bucket_counts == min_score)[0]
     for i in min_bucket_counts_indices:
