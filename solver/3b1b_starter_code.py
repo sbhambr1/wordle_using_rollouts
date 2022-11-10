@@ -229,7 +229,7 @@ def simulate_games(first_guess=None,
     game_results = []
     mystery_list_lengths = []
     
-    results = Parallel(n_jobs=10)(delayed(solve_games_in_parallel)(answer, all_words=all_words, priors=priors, exclude_seen_words=exclude_seen_words, seen=seen, rollout_begin_at=rollout_begin_at, hard_mode=hard_mode, rollout_top_k=rollout_top_k, track_failures=track_failures, tracking_dict=tracking_dict, num_times_word_in_top_k=num_times_word_in_top_k, num_times_word_finally_selected=num_times_word_finally_selected,
+    results = Parallel(n_jobs=100)(delayed(solve_games_in_parallel)(answer, all_words=all_words, priors=priors, exclude_seen_words=exclude_seen_words, seen=seen, rollout_begin_at=rollout_begin_at, hard_mode=hard_mode, rollout_top_k=rollout_top_k, track_failures=track_failures, tracking_dict=tracking_dict, num_times_word_in_top_k=num_times_word_in_top_k, num_times_word_finally_selected=num_times_word_finally_selected,
                             scores=scores, game_results=game_results, mystery_list_lengths=mystery_list_lengths, brute_force_optimize=brute_force_optimize, look_two_ahead=look_two_ahead, purely_maximize_information=purely_maximize_information, optimize_using_lower_bound=optimize_using_lower_bound, use_approximation_curve=use_approximation_curve)
                             for answer in ProgressDisplay(test_set, leave=False, desc=" Trying all wordle answers"))
 
@@ -266,6 +266,8 @@ if __name__ == "__main__":
     # first_guesses = ['saletnf', 'soaremx']
 
     # first_guesses = ['scarpe', 'adsale']
+
+    first_guesses = ['prate', 'crane', 'carle', 'train', 'raise', 'clout', 'nymph'] #existing works
 
     saving_results_to_csv = False
 
