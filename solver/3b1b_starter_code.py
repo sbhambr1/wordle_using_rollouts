@@ -96,7 +96,7 @@ def solve_games_in_parallel(answer, all_words, priors, exclude_seen_words, seen,
                 results = one_step_lookahead_minimization(guess_words=choices,
                                                                 mystery_words=possibilities,
                                                                 priors=priors,
-                                                                heuristic='greatest_exp_prob', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
+                                                                heuristic='max_info_gain', #min_expected_scores, max_info_gain, most_rapid_decrease, greatest_exp_prob
                                                                 top_picks=rollout_top_k,
                                                                 pattern=pattern,
                                                                 hard_mode=hard_mode,
@@ -269,6 +269,8 @@ if __name__ == "__main__":
 
     first_guesses = ['prate', 'crane', 'carle', 'train', 'raise', 'clout', 'nymph'] #existing works
 
+    first_guesses = ['salet']
+
     saving_results_to_csv = False
 
     for first_guess in first_guesses:
@@ -279,8 +281,8 @@ if __name__ == "__main__":
             first_guess=first_guess,
             priors=None,
             rollout_begin_at=2,
-            rollout_top_k=10,
-            hard_mode=False,
+            rollout_top_k=20,
+            hard_mode=True,
             test_mode=False,
             track_failures=True,
             num_times_word_in_top_k=0,

@@ -540,8 +540,8 @@ def one_step_lookahead_minimization(guess_words, mystery_words, priors, heuristi
 
     if word_selected_by_heuristic in top_choices:
         num_times_word_in_top_k += 1
-    else:
-        top_choices.append(word_selected_by_heuristic)
+    # else:
+        # top_choices.append(word_selected_by_heuristic)
 
     for choice in top_choices:
         mean_q_factor = get_mean_q_factor(choice, guess_words, mystery_words, priors, heuristic, pattern, hard_mode)
