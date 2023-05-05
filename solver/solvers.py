@@ -1,15 +1,13 @@
+import multiprocessing
+import random
 import warnings
 
 import numpy as np
-from algorithms.entropy import *
-from algorithms.second_guesses import *
-from helper_functions.color_patterns import *
-from helper_functions.get_data import *
-from manimlib import *
-import random
+# from algorithms.entropy import *
+# from algorithms.second_guesses import *
+# from helper_functions.color_patterns import *
+# from helper_functions.get_data import *
 from tqdm import tqdm as ProgressDisplay
-import multiprocessing
-from joblib import Parallel, delayed
 
 warnings.filterwarnings("ignore")
 

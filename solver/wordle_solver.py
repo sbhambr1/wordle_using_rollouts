@@ -12,14 +12,12 @@ import random
 import time
 import warnings
 
-import manimlib.utils as mu
 import numpy as np
 import pandas as pd
-from algorithms.entropy import *
-from algorithms.second_guesses import *
-from helper_functions.color_patterns import *
-from helper_functions.get_data import *
-from manimlib import *
+# from algorithms.entropy import *
+# from algorithms.second_guesses import *
+# from helper_functions.color_patterns import *
+# from helper_functions.get_data import *
 from tqdm import tqdm as ProgressDisplay
 
 from solver.solvers import *
@@ -168,30 +166,7 @@ def simulate_games(first_guess=None,
                     computed_guess, top_k_counter, final_selection_counter = results[0], results[1], results[2]
                     num_times_word_in_top_k += top_k_counter
                     num_times_word_finally_selected += final_selection_counter
-
-                    # computed_guess = brute_force_optimal_guess(
-                    # choices, possibilities, priors,
-                    # n_top_picks=rollout_top_k, 
-                    # pattern=pattern,
-                    # super_heuristic=super_heuristic,
-                    # optimize_using_lower_bound=optimize_using_lower_bound,
-                    # purely_maximize_information=purely_maximize_information,
-                    # use_approximation_curve=use_approximation_curve,
-                    # expected_scores_heuristic=expected_scores_heuristic,
-                    # hard_mode=hard_mode)
-
-                    # Experiments for using ONLY base heuristics.
-
-                    # computed_guess = min_expected_score_guess(choices, possibilities, priors)
-
-                    # computed_guess = max_info_gain_guess(choices, possibilities, priors)
-
-                    # computed_guess = most_rapid_decrease_guess(choices, possibilities, priors)
-
-                    # computed_guess = greatest_exp_prob_guess(choices, possibilities, priors)
-
                     guess=computed_guess
-                    # guess = next_guess_map[phash]
                 else:
                     computed_guess = get_next_guess(guesses, patterns, possibilities, pattern)
                     guess=computed_guess

@@ -1,5 +1,0 @@
-nymph
-[1, 57, 687, 1216, 324, 28, 2] 8842 3.819438444924406 1269 3986
-Failure case guesses: 
-{'vaunt': ['nymph', 'boned', 'saint', 'gaunt', 'jaunt', 'taunt', 'vaunt'], 'watch': ['nymph', 'torch', 'hatch', 'batch', 'catch', 'latch', 'watch']}
---- 236125.35939502716 seconds ---
