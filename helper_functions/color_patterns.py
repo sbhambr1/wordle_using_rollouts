@@ -6,6 +6,7 @@ import numpy as np
 from manimlib import *
 
 from helper_functions.get_data import *
+# from get_data import *
 
 MISS = np.uint8(0)
 MISPLACED = np.uint8(1)
