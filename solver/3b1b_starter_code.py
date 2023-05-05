@@ -281,7 +281,7 @@ if __name__ == "__main__":
             first_guess=first_guess,
             priors=None,
             rollout_begin_at=2,
-            rollout_top_k=20,
+            rollout_top_k=10,
             hard_mode=True,
             test_mode=False,
             track_failures=True,
