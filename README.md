@@ -36,8 +36,6 @@ Download the data from [here](https://drive.google.com/drive/folders/1Dc33j2bFBP
 python3 solver/3b1b_starter_code.py
 ```
 
-**Note**: Dont push data/pattern_matrix.npy after running the code.
-
 ## Citation
 If you find this code useful, please consider citing our paper:
 ```
