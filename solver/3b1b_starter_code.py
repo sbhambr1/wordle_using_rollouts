@@ -256,20 +256,8 @@ def simulate_games(first_guess=None,
 if __name__ == "__main__":
     start_time = time.time()
 
-    first_guesses = ["salet", "reast", "crate"] #testing
-
     first_guesses = ['salet', 'reast', 'crate', 'trace', 'slate', 'trape', 'slane', 'prate', 'crane', 'carle', 'train',
-                    'raise', 'clout', 'nymph'] #existing works
-
-    # first_guesses = ['nymph']
-
-    # first_guesses = ['saletnf', 'soaremx']
-
-    # first_guesses = ['scarpe', 'adsale']
-
-    first_guesses = ['prate', 'crane', 'carle', 'train', 'raise', 'clout', 'nymph'] #existing works
-
-    first_guesses = ['salet']
+                    'raise', 'clout', 'nymph']
 
     saving_results_to_csv = False
 
